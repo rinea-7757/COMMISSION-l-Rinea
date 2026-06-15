@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Commission Form</title>
+    <title>Premium Notion-optimized Commission Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
-        // 가격 원본 데이터 설정 (여기서 가격을 수정하면 실시간 계산기에 바로 반영됩니다)
+        // 가격 원본 데이터 설정
         const basePrices = {
             "두상": { usd: 30, krw: 40000 },
             "반신": { usd: 60, krw: 80000 },
@@ -31,6 +31,7 @@
             background-color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
         }
+        /* 우아한 스크롤바 커스텀 */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -116,8 +117,52 @@
     <div id="main-content-2" class="mx-auto w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hidden">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-                <h1 class="text-xl font-bold tracking-tight text-slate-900">Order Form / 신청양식</h1>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900">Order Form & Terms / 신청양식 및 약관</h1>
                 <p class="mt-1 text-xs text-slate-400">옵션을 체크하면 실시간 총견적이 바로 하단에 자동 계산됩니다.</p>
+            </div>
+        </div>
+
+        <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs text-slate-600 space-y-4 max-h-[240px] overflow-y-auto">
+            <div class="border-b border-slate-200 pb-2 text-center">
+                <p class="font-bold text-slate-800">⚠️ Please read the terms carefully before placing an order. By commissioning me, you agree to all the terms listed below.</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">커미션 신청 전 약관을 주의 깊게 읽어주세요. 의뢰를 신청하시면 아래의 모든 약관에 동의한 것으로 간주됩니다.</p>
+            </div>
+
+            <div>
+                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">🔒 COPYRIGHT & USAGE 저작권 및 사용 범위</h4>
+                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
+                    <li>I retain all copyrights to the artwork. I reserve the right to post the artwork on my social media/portfolio.<br><span class="text-slate-400 text-[11px]">모든 저작권은 작가에게 있습니다. 완성작은 작가의 SNS나 포트폴리오에 공개될 수 있습니다.</span></li>
+                    <li>An extra fee will be charged for keeping the artwork private, depending on the scale of the project. Please discuss this with me in advance.<br><span class="text-slate-400 text-[11px]">비공개를 원하실 경우 유동적인 추가금이 발생합니다, 사전에 문의해 주세요.</span></li>
+                    <li>Artworks are for personal use only. No commercial use, tracing, or reselling.<br><span class="text-slate-400 text-[11px]">개인 소장용 작업물의 상업적 이용, 트레이싱, 재판매를 금지합니다.</span></li>
+                    <li>Streamers, VTubers, and Youtubers must order under the [Commercial / Streaming] type.<br><span class="text-slate-400 text-[11px]">방송, 버튜버, 유튜브용 의뢰는 반드시 방송용/상업용 타입으로 신청해야 합니다.</span></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">⚙️ WORK PROCESS & REVISIONS 작업 과정 및 수정</h4>
+                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
+                    <li><strong>PROCESS:</strong> Sketch ➔ Lineart & Flat Color ➔ Final Delivery<br><span class="text-slate-400 text-[11px]">과정: 러프 ➔ 선화/밑색 ➔ 최종 완성</span></li>
+                    <li><strong>REVISIONS:</strong> Up to [2] free revisions are allowed only up to during the lineart stage.<br><span class="text-slate-400 text-[11px]">수정 및 변형: 선화 단계까지만 최대 2회 무료 수정 가능합니다.</span></li>
+                    <li>Major changes after the lineart stage or after completion will require an extra fee.<br><span class="text-slate-400 text-[11px]">선화 단계 이후나 완성 후의 큰 수정은 별도의 추가금이 청구됩니다.</span></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">📅 DEADLINE 작업 기한</h4>
+                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
+                    <li>The estimated turnaround time is [4 weeks] after payment.<br><span class="text-slate-400 text-[11px]">예상 작업 기간은 결제 후 4주입니다.</span></li>
+                    <li>For rushed orders, a rush fee will apply. Please check the extra fees on the price list and discuss it with me beforehand.<br><span class="text-slate-400 text-[11px]">빠른 마감은 추가금이 붙으니 가격표의 추가금 항목 확인 후 사전에 문의해 주세요.</span></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">💳 PAYMENT & REFUNDS 결제 및 환불</h4>
+                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
+                    <li>All payments must be made in full upfront via [PayPal].<br><span class="text-slate-400 text-[11px]">모든 결제는 페이팔을 통한 선불 완납 방식으로 진행됩니다.</span></li>
+                    <li>100% refund if cancelled before I start working.<br><span class="text-slate-400 text-[11px]">작업 시작 전 취소 시 100% 환불</span></li>
+                    <li>50% refund during the sketch stage.<br><span class="text-slate-400 text-[11px]">러프 단계 진행 중 취소 시 50% 환불</span></li>
+                    <li><strong class="text-rose-600">NO REFUNDS after the sketch has been approved.</strong><br><span class="text-rose-500/80 text-[11px]">러프가 승인된 이후에는 환불이 불가능합니다.</span></li>
+                </ul>
             </div>
         </div>
 
@@ -140,7 +185,7 @@
             <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Usage / 이용 용도</label>
                 <div class="grid grid-cols-2 gap-3" id="purpose-group">
-                    <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center ring-2 ring-indigo-600 selected">
+                    <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
                         <input type="radio" name="purpose" value="1" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
                         <span class="text-sm font-semibold text-slate-900">Personal Use</span>
                         <span class="text-[10px] text-slate-400 mt-1">개인 소장용</span>
@@ -201,14 +246,14 @@
                             <input type="checkbox" id="opt-prop" data-name="단순 소품 및 디자인" value="10,15000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
                             Simple props & Design / 단순 소품 및 디자인
                         </span>
-                        <span class="text-[10px] text-slate-400">+$10 / ₩15,000</span>
+                        <span class="text-[10px] text-slate-400">무료 ~ +$10 / ₩15,000</span>
                     </label>
                     <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
                         <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                             <input type="checkbox" id="opt-detail" data-name="고디테일 요소" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
                             Highly detailed elements / 고디테일 요소
                         </span>
-                        <span class="text-[10px] text-slate-400">+$5 / ₩10,000 ~</span>
+                        <span class="text-[10px] text-slate-400">+$5~ / ₩10,000~</span>
                     </label>
                 </div>
             </div>
@@ -216,7 +261,7 @@
             <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Rush Fee / 빠른 마감 여부</label>
                 <div class="grid grid-cols-3 gap-2" id="rush-group">
-                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center ring-2 ring-indigo-600 selected">
+                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
                         <input type="radio" name="rush" value="0" data-name="일반 마감" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
                         <span class="text-xs font-semibold text-slate-900">Normal</span>
                         <span class="text-[9px] text-slate-400 mt-1">일반마감 (최대 4주)</span>
@@ -235,7 +280,7 @@
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(Optional)</span></label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(Optional / 선택)</span></label>
                 <input type="date" id="deadline" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all">
             </div>
 
@@ -293,8 +338,9 @@
     </div>
 
 <script>
-    // 🔒 비밀 링크 검증 보안 장치
+    // 🔒 비밀 링크 검증 보안 장치 및 초기화
     document.addEventListener("DOMContentLoaded", () => {
+        console.log("🎨 Form system initialized and loaded.");
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('access') === 'open') {
             document.getElementById("lock-screen").classList.add("hidden");
@@ -304,9 +350,11 @@
 
         const savedWebhook = localStorage.getItem("commission_discord_webhook");
         if (savedWebhook) {
+            console.log("✅ Webhook address found in local cache.");
             document.getElementById("setting-webhook-url").value = savedWebhook;
             document.getElementById("setup-warning").classList.add("hidden");
         } else {
+            console.warn("⚠️ Webhook address is missing.");
             document.getElementById("setup-warning").classList.remove("hidden");
         }
         calculate();
@@ -319,6 +367,7 @@
     function saveWebhookSettings() {
         const url = document.getElementById("setting-webhook-url").value.trim();
         localStorage.setItem("commission_discord_webhook", url);
+        console.log("💾 Webhook URL saved internally to localStorage:", url);
         
         const statusBox = document.getElementById("status-box");
         statusBox.style.display = "block";
@@ -333,75 +382,110 @@
 
     function testWebhook() {
         const url = document.getElementById("setting-webhook-url").value.trim();
-        if (!url) return;
+        if (!url) {
+            console.error("❌ Test aborted: Webhook URL input is empty.");
+            return;
+        }
 
+        console.log("🔌 Initiating test payload dispatch to Discord...");
         fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: "🔔 [테스트] 웹훅 연동 성공!" })
+            body: JSON.stringify({ content: "🔔 [웹사이트 연동 테스트] 디스코드 연결 통로가 활성화되었습니다!" })
         })
         .then(res => {
             if (res.ok) {
+                console.log("🎉 Test Connection Succeeded!");
                 alert("연동 성공! 디스코드 채널을 확인해 보세요.");
                 toggleSettingsModal();
-            } else { throw new Error(); }
+            } else { throw new Error("Discord Rejected payload"); }
         })
-        .catch(() => alert("전송 실패! 주소를 다시 확인해 주세요."));
+        .catch(err => {
+            console.error("❌ Webhook test failed:", err);
+            alert("전송 실패! 주소를 다시 확인해 주세요.");
+        });
     }
 
     function handlePurposeChange(input) {
-        document.querySelectorAll('#purpose-group label').forEach(l => l.classList.remove('ring-2', 'ring-indigo-600', 'selected'));
-        if (input.checked) input.closest('label').classList.add('ring-2', 'ring-indigo-600', 'selected');
+        document.querySelectorAll('#purpose-group label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        });
+        if (input.checked) {
+            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        }
         updatePrices();
     }
 
     function handleBaseChange(input) {
-        document.querySelectorAll('#base-options label').forEach(l => l.classList.remove('ring-2', 'ring-indigo-600', 'selected'));
-        if (input.checked) input.closest('label').classList.add('ring-2', 'ring-indigo-600', 'selected');
+        document.querySelectorAll('#base-options label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        });
+        if (input.checked) {
+            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        }
         calculate();
     }
 
     function handleRushChange(input) {
-        document.querySelectorAll('#rush-group label').forEach(l => l.classList.remove('ring-2', 'ring-indigo-600', 'selected'));
-        if (input.checked) input.closest('label').classList.add('ring-2', 'ring-indigo-600', 'selected');
+        document.querySelectorAll('#rush-group label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        });
+        if (input.checked) {
+            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        }
         calculate();
     }
 
     function handleCheckboxChange(input) {
         const label = input.closest('label');
-        if (input.checked) label.classList.add('bg-indigo-50/50', 'border-indigo-300');
-        else label.classList.remove('bg-indigo-50/50', 'border-indigo-300');
+        if (input.checked) {
+            label.classList.add('bg-indigo-50/50', 'border-indigo-300');
+        } else {
+            label.classList.remove('bg-indigo-50/50', 'border-indigo-300');
+        }
         calculate();
     }
 
     function updatePrices() {
-        const factor = document.querySelector('input[name="purpose"]:checked').value;
-        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${40k * factor}`;
-        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${((40000 * factor)/1000).toFixed(0)}k`;
-        document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${((80000 * factor)/1000).toFixed(0)}k`;
-        document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${((110000 * factor)/1000).toFixed(0)}k`;
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${((40000 * factor) / 1000).toFixed(0)}k`;
+        document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${((80000 * factor) / 1000).toFixed(0)}k`;
+        document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${((110000 * factor) / 1000).toFixed(0)}k`;
         calculate();
     }
 
     function calculate() {
         const checkedBase = document.querySelector('input[name="base_opt"]:checked');
-        if (!checkedBase) return {usd: 0, krw: 0};
+        if (!checkedBase) {
+            document.getElementById('total-price').innerText = "$0 / ₩0";
+            return {usd: 0, krw: 0};
+        }
 
         const baseName = checkedBase.value;
-        const factor = parseInt(document.querySelector('input[name="purpose"]:checked').value);
-        const rush = parseFloat(document.querySelector('input[name="rush"]:checked').value);
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        const checkedRush = document.querySelector('input[name="rush"]:checked');
+        const rush = checkedRush ? parseFloat(checkedRush.value) : 0;
         
         let bu = basePrices[baseName].usd * factor;
         let bk = basePrices[baseName].krw * factor;
-        let eu = 0, ek = 0;
+        let eu = 0; let ek = 0;
 
         if (document.getElementById('opt-person').checked) {
             eu += Math.round(bu * 0.8); ek += Math.round(bk * 0.8);
+            document.getElementById('text-person').innerText = `+$${Math.round(bu * 0.8)} / +₩${Math.round(bk * 0.8).toLocaleString()}`;
+        } else {
+            document.getElementById('text-person').innerText = `기본금의 80% 추가`;
         }
 
-        if (document.getElementById('opt-bg').checked) { eu += 5; ek += 10000; }
-        if (document.getElementById('opt-prop').checked) { eu += 10; ek += 15000; }
-        if (document.getElementById('opt-detail').checked) { eu += 5; ek += 10000; }
+        ['opt-bg', 'opt-prop', 'opt-detail'].forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb && cb.checked) {
+                const values = cb.value.split(',');
+                eu += parseInt(values[0]); ek += parseInt(values[1]);
+            }
+        });
 
         let finalUsd = (bu + eu) * (1 + rush);
         let finalKrw = (bk + ek) * (1 + rush);
@@ -411,32 +495,73 @@
     }
 
     function sendToDiscord() {
+        console.log("👉 Submit button clicked!");
         const statusBox = document.getElementById('status-box');
+        const submitBtn = document.getElementById('submit-button');
+
+        statusBox.style.display = 'none';
+        statusBox.className = 'p-4 rounded-xl text-sm font-medium border';
+
         const email = document.getElementById('user-email').value.trim();
         const checkedBase = document.querySelector('input[name="base_opt"]:checked');
         
-        if (!email || !checkedBase) {
-            statusBox.innerText = '⚠️ 이메일 주소와 기본 옵션을 정확히 선택해 주세요.';
-            statusBox.className = 'p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200 block';
-            return;
+        if (!email) { 
+            statusBox.innerText = '⚠️ Applicant Email(신청자 이메일)을 입력해 주세요.';
+            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            statusBox.style.display = "block";
+            return; 
+        }
+        if (!checkedBase) { 
+            statusBox.innerText = '⚠️ Base Options(기본 옵션)을 선택해 주세요.';
+            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            statusBox.style.display = "block";
+            return; 
         }
 
         const webhookUrl = localStorage.getItem("commission_discord_webhook");
         if (!webhookUrl) {
-            alert("작가 전용 웹훅 주소가 설정되지 않았습니다.");
+            statusBox.innerText = '❌ 작가용 웹훅 주소가 연동되지 않았습니다. 오른쪽 하단 톱니바퀴 버튼을 클릭해 주소를 먼저 저장해 주세요.';
+            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            statusBox.style.display = "block";
             return;
         }
 
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `전송 중... (Sending...)`;
+
+        const purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
+        const charDesc = document.getElementById('char-desc').value.trim() || '미작성';
+        const baseText = checkedBase.value;
+        const rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name');
+        const deadline = document.getElementById('deadline').value || '미지정';
+        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
+
+        let extras = [];
+        ['opt-person', 'opt-bg', 'opt-prop', 'opt-detail'].forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb && cb.checked) extras.push(cb.getAttribute('data-name'));
+        });
+        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
+
+        const prices = calculate();
+        const bt = String.fromCharCode(96, 96, 96);
+
         const discordPayload = {
             embeds: [{
-                title: "🎨 새로운 커미션 신청서 접수",
-                color: 4930162,
+                title: "🎨 새로운 커미션 신청서가 접수되었습니다!",
+                color: 4930162, 
                 fields: [
-                    { name: "📧 이메일", value: email, inline: true },
-                    { name: "📐 옵션", value: checkedBase.value, inline: true },
-                    { name: "📝 캐릭터 설정", value: document.getElementById('char-desc').value || '없음' },
-                    { name: "💰 견적액", value: document.getElementById('total-price').innerText }
-                ]
+                    { name: "📧 신청자 이메일", value: email, inline: true },
+                    { name: "⚖️ 이용 용도", value: purposeText, inline: true },
+                    { name: "📐 기본 옵션", value: baseText, inline: true },
+                    { name: "➕ 추가 옵션", value: extrasText, inline: false },
+                    { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
+                    { name: "📅 희망 마감일", value: deadline, inline: true },
+                    { name: "📝 캐릭터 외관 설정", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
+                    { name: "💭 기타 문의내용", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
+                    { name: "💰 예상 최종 견적", value: `**$${prices.usd} / ₩${prices.krw.toLocaleString()}**`, inline: false }
+                ],
+                timestamp: new Date().toISOString()
             }]
         };
 
@@ -444,11 +569,45 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(discordPayload)
-        }).then(() => {
-            statusBox.innerText = "🎉 신청서가 성공적으로 발송되었습니다!";
-            statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block";
+        })
+        .then(response => {
+            if (response.ok) {
+                statusBox.innerText = "🎉 신청서가 디스코드 채널로 성공적으로 제출되었습니다! 빠른 기일 내에 확인 후 이메일로 회신해 드리겠습니다.";
+                statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200";
+                statusBox.style.display = "block";
+                
+                // 성공 시 인풋 초기화
+                document.getElementById('user-email').value = '';
+                document.getElementById('char-desc').value = '';
+                document.getElementById('deadline').value = '';
+                document.getElementById('other-requests').value = '';
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('label').classList.remove('bg-indigo-50/50', 'border-indigo-300');
+                });
+                document.querySelectorAll('input[name="base_opt"]').forEach(rb => {
+                    rb.checked = false;
+                    rb.closest('label').classList.remove('selected', 'ring-2', 'ring-indigo-600');
+                });
+                calculate();
+            } else {
+                throw new Error("Network Error");
+            }
+        })
+        .catch(error => {
+            statusBox.innerHTML = `
+                <div>❌ <strong>전송 장애 발생!</strong></div>
+                <div class="mt-1 text-xs opacity-90 leading-relaxed">디스코드 웹훅 주소 설정을 검증하고 브라우저 개발자 도구(F12) 콘솔 로그 내용을 확인해 주세요.</div>
+            `;
+            statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200";
+            statusBox.style.display = "block";
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "🎨 신청서 전송하기 (Submit Order)";
         });
     }
 </script>
+
 </body>
 </html>
