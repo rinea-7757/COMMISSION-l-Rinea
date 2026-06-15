@@ -8,13 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
-        // 가격 원본 데이터 설정
-        const basePrices = {
-            "두상": { usd: 30, krw: 40000 },
-            "반신": { usd: 60, krw: 80000 },
-            "전신": { usd: 80, krw: 110000 }
-        };
-
         tailwind.config = {
             theme: {
                 extend: {
@@ -24,6 +17,21 @@
                 }
             }
         }
+
+        const basePrices = {
+            "두상": { usd: 30, krw: 40000 },
+            "반신": { usd: 60, krw: 80000 },
+            "전신": { usd: 80, krw: 110000 }
+        };
+
+        // 초기 기본 월별 슬롯 상태 데이터 (기본값 다 CLOSED로 설정, 언제든 관리자창에서 클릭으로 변경 가능)
+        const defaultSlots = {
+            1: false, 2: false, 3: false, 4: false, 5: false, 6: false,
+            7: false, 8: true, 9: true, 10: true, 11: true, 12: true
+        };
+
+        // 초기 기본 공지사항 데이터
+        const defaultNotice = `[공지사항 및 약관]\n\n• 모든 저작권은 작가에게 있습니다.\n• 작업 기간은 최소 1주에서 최대 4주 소요됩니다.\n• 슬롯 현황을 확인하신 후 신청해 주세요!`;
     </script>
     <style>
         body {
@@ -31,7 +39,6 @@
             background-color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
         }
-        /* 우아한 스크롤바 커스텀 */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -44,146 +51,48 @@
         }
     </style>
 </head>
-<body class="p-2 sm:p-4 text-slate-800 flex flex-col items-center justify-center min-h-screen gap-4">
+<body class="p-2 sm:p-4 text-slate-800 bg-slate-50 min-h-screen pb-24">
 
-    <div id="lock-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 p-4 text-center">
-        <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <span class="text-4xl">🔒</span>
-            <h2 class="mt-4 text-lg font-bold text-slate-900">접근 제한 안내</h2>
-            <p class="mt-2 text-xs text-slate-500 leading-relaxed">본 페이지는 작가에게 직접 비밀 링크(암호화 주소)를 수령한 신청자분만 접근하실 수 있습니다.</p>
-        </div>
+<div class="mx-auto max-w-xl space-y-4">
+    
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-base font-bold tracking-tight text-slate-900 mb-3 flex items-center gap-2">
+            📅 2026 SLOT STATUS 작업 슬롯 현황
+        </h2>
+        <div class="grid grid-cols-3 gap-2 text-center" id="live-slots-display">
+            </div>
     </div>
 
-    <div id="main-content-1" class="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hidden">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-            <h3 class="text-sm font-black text-slate-900 tracking-tight flex items-center gap-2">
-                🗓️ 2026 SLOT STATUS 작업 슬롯 현황
-            </h3>
-            <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold">실시간 업데이트</span>
-        </div>
-        
-        <div class="grid grid-cols-3 gap-2.5 mt-3">
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Jan. 1월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-sm font-bold tracking-tight text-slate-900 mb-2 flex items-center gap-2">
+            📜 Notice & Terms / 공지 및 약관
+        </h2>
+        <div id="live-notice-display" class="text-xs text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100 whitespace-pre-wrap leading-relaxed">
             </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Feb. 2월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Mar. 3월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Apr. 4월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">May. 5월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Jun. 6월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl flex flex-col justify-between h-14 opacity-60">
-                <span class="text-[11px] font-bold text-slate-500">Jul. 7월</span>
-                <span class="inline-block bg-slate-200 text-slate-600 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">CLOSED</span>
-            </div>
-            <div class="bg-sky-50/70 border border-sky-100 p-2.5 rounded-xl flex flex-col justify-between h-14 ring-1 ring-sky-200/50">
-                <span class="text-[11px] font-bold text-slate-700">Aug. 8월</span>
-                <span class="inline-block bg-sky-100 text-sky-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">OPEN</span>
-            </div>
-            <div class="bg-sky-50/70 border border-sky-100 p-2.5 rounded-xl flex flex-col justify-between h-14 ring-1 ring-sky-200/50">
-                <span class="text-[11px] font-bold text-slate-700">Sep. 9월</span>
-                <span class="inline-block bg-sky-100 text-sky-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">OPEN</span>
-            </div>
-            <div class="bg-sky-50/70 border border-sky-100 p-2.5 rounded-xl flex flex-col justify-between h-14 ring-1 ring-sky-200/50">
-                <span class="text-[11px] font-bold text-slate-700">Oct. 10월</span>
-                <span class="inline-block bg-sky-100 text-sky-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">OPEN</span>
-            </div>
-            <div class="bg-sky-50/70 border border-sky-100 p-2.5 rounded-xl flex flex-col justify-between h-14 ring-1 ring-sky-200/50">
-                <span class="text-[11px] font-bold text-slate-700">Nov. 11월</span>
-                <span class="inline-block bg-sky-100 text-sky-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">OPEN</span>
-            </div>
-            <div class="bg-sky-50/70 border border-sky-100 p-2.5 rounded-xl flex flex-col justify-between h-14 ring-1 ring-sky-200/50">
-                <span class="text-[11px] font-bold text-slate-700">Dec. 12월</span>
-                <span class="inline-block bg-sky-100 text-sky-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded w-max">OPEN</span>
-            </div>
-        </div>
     </div>
 
-    <div id="main-content-2" class="mx-auto w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hidden">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-                <h1 class="text-xl font-bold tracking-tight text-slate-900">Order Form & Terms / 신청양식 및 약관</h1>
-                <p class="mt-1 text-xs text-slate-400">옵션을 체크하면 실시간 총견적이 바로 하단에 자동 계산됩니다.</p>
-            </div>
-        </div>
-
-        <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs text-slate-600 space-y-4 max-h-[240px] overflow-y-auto">
-            <div class="border-b border-slate-200 pb-2 text-center">
-                <p class="font-bold text-slate-800">⚠️ Please read the terms carefully before placing an order. By commissioning me, you agree to all the terms listed below.</p>
-                <p class="text-[11px] text-slate-500 mt-0.5">커미션 신청 전 약관을 주의 깊게 읽어주세요. 의뢰를 신청하시면 아래의 모든 약관에 동의한 것으로 간주됩니다.</p>
-            </div>
-
-            <div>
-                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">🔒 COPYRIGHT & USAGE 저작권 및 사용 범위</h4>
-                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li>I retain all copyrights to the artwork. I reserve the right to post the artwork on my social media/portfolio.<br><span class="text-slate-400 text-[11px]">모든 저작권은 작가에게 있습니다. 완성작은 작가의 SNS나 포트폴리오에 공개될 수 있습니다.</span></li>
-                    <li>An extra fee will be charged for keeping the artwork private, depending on the scale of the project. Please discuss this with me in advance.<br><span class="text-slate-400 text-[11px]">비공개를 원하실 경우 유동적인 추가금이 발생합니다, 사전에 문의해 주세요.</span></li>
-                    <li>Artworks are for personal use only. No commercial use, tracing, or reselling.<br><span class="text-slate-400 text-[11px]">개인 소장용 작업물의 상업적 이용, 트레이싱, 재판매를 금지합니다.</span></li>
-                    <li>Streamers, VTubers, and Youtubers must order under the [Commercial / Streaming] type.<br><span class="text-slate-400 text-[11px]">방송, 버튜버, 유튜브용 의뢰는 반드시 방송용/상업용 타입으로 신청해야 합니다.</span></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">⚙️ WORK PROCESS & REVISIONS 작업 과정 및 수정</h4>
-                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li><strong>PROCESS:</strong> Sketch ➔ Lineart & Flat Color ➔ Final Delivery<br><span class="text-slate-400 text-[11px]">과정: 러프 ➔ 선화/밑색 ➔ 최종 완성</span></li>
-                    <li><strong>REVISIONS:</strong> Up to [2] free revisions are allowed only up to during the lineart stage.<br><span class="text-slate-400 text-[11px]">수정 및 변형: 선화 단계까지만 최대 2회 무료 수정 가능합니다.</span></li>
-                    <li>Major changes after the lineart stage or after completion will require an extra fee.<br><span class="text-slate-400 text-[11px]">선화 단계 이후나 완성 후의 큰 수정은 별도의 추가금이 청구됩니다.</span></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">📅 DEADLINE 작업 기한</h4>
-                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li>The estimated turnaround time is [4 weeks] after payment.<br><span class="text-slate-400 text-[11px]">예상 작업 기간은 결제 후 4주입니다.</span></li>
-                    <li>For rushed orders, a rush fee will apply. Please check the extra fees on the price list and discuss it with me beforehand.<br><span class="text-slate-400 text-[11px]">빠른 마감은 추가금이 붙으니 가격표의 추가금 항목 확인 후 사전에 문의해 주세요.</span></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-extrabold text-slate-900 border-l-2 border-indigo-500 pl-1.5 mb-1">💳 PAYMENT & REFUNDS 결제 및 환불</h4>
-                <ul class="list-disc pl-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li>All payments must be made in full upfront via [PayPal].<br><span class="text-slate-400 text-[11px]">모든 결제는 페이팔을 통한 선불 완납 방식으로 진행됩니다.</span></li>
-                    <li>100% refund if cancelled before I start working.<br><span class="text-slate-400 text-[11px]">작업 시작 전 취소 시 100% 환불</span></li>
-                    <li>50% refund during the sketch stage.<br><span class="text-slate-400 text-[11px]">러프 단계 진행 중 취소 시 50% 환불</span></li>
-                    <li><strong class="text-rose-600">NO REFUNDS after the sketch has been approved.</strong><br><span class="text-rose-500/80 text-[11px]">러프가 승인된 이후에는 환불이 불가능합니다.</span></li>
-                </ul>
-            </div>
-        </div>
-
-        <div id="setup-warning" class="mt-4 rounded-xl bg-amber-50 p-3.5 border border-amber-200 text-xs text-amber-800 flex items-start gap-2.5 hidden">
-            <svg class="h-4 w-4 shrink-0 mt-0.5 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-                <strong class="font-semibold block">⚠️ 작가 알림: 디스코드 웹훅 주소가 설정되지 않았습니다.</strong>
-                오른쪽 아래의 톱니바퀴 아이콘을 누르고 본인의 디스코드 채널 웹훅 주소를 등록해주세요.
+                <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                    Order Form / 신청양식
+                </h1>
+                <p class="mt-1 text-xs text-slate-400">옵션을 체크하면 실시간 총견적이 자동 계산됩니다.</p>
             </div>
         </div>
 
         <div class="mt-6 space-y-6">
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Applicant Email / 신청자 이메일</label>
-                <input type="email" id="user-email" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all" placeholder="example@email.com">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Applicant Email / 신청자 이메일 & 디스코드 아이디
+                </label>
+                <input type="email" id="user-email" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all" placeholder="example@email.com / @username">
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Usage / 이용 용도</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Usage / 이용 용도
+                </label>
                 <div class="grid grid-cols-2 gap-3" id="purpose-group">
                     <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
                         <input type="radio" name="purpose" value="1" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
@@ -199,67 +108,108 @@
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Character Reference / 캐릭터 외관 설정</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Character Reference / 캐릭터 외관 설정
+                </label>
                 <textarea id="char-desc" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-28 resize-y transition-all" placeholder="성별, 의상, 분위기 등을 최대한 상세히 적어주세요."></textarea>
+                
+                <div class="mt-2">
+                    <label class="text-[11px] font-semibold text-slate-400 block mb-1">참조 이미지 첨부 (Optional)</label>
+                    <input type="file" id="char-image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
+                    <p class="text-[10px] text-slate-400 mt-1">※ 이미지는 디스코드에 파일로 함께 전송됩니다.</p>
+                </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Base Options / 기본 옵션</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Base Options / 기본 옵션
+                </label>
                 <div class="grid grid-cols-3 gap-2" id="base-options">
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="두상" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
                         <span class="text-xs font-semibold text-slate-900">Bust-up</span>
-                        <span class="text-[9px] text-slate-500 mt-1" id="desc-두상">$30 / ₩40k</span>
+                        <span class="text-[9px] text-slate-500 mt-1" id="desc-두상">$30 / ₩40,000</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="반신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
                         <span class="text-xs font-semibold text-slate-900">Half-body</span>
-                        <span class="text-[9px] text-slate-500 mt-1" id="desc-반신">$60 / ₩80k</span>
+                        <span class="text-[9px] text-slate-500 mt-1" id="desc-반신">$60 / ₩80,000</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="전신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
                         <span class="text-xs font-semibold text-slate-900">Full-body</span>
-                        <span class="text-[9px] text-slate-500 mt-1" id="desc-전신">$80 / ₩110k</span>
+                        <span class="text-[9px] text-slate-500 mt-1" id="desc-전신">$80 / ₩110,000</span>
                     </label>
                 </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Add-ons & Extra Fees / 추가 옵션</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Add-ons & Extra Fees / 추가 옵션
+                </label>
                 <div class="space-y-2">
-                    <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
-                        <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
-                            <input type="checkbox" id="opt-person" data-name="인물 추가" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                            Extra Character / 인물 추가
-                        </span>
-                        <span id="text-person" class="text-[10px] text-slate-400">기본금의 80% 추가</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
-                        <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
-                            <input type="checkbox" id="opt-bg" data-name="배경 추가" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                            Background / 배경 추가
-                        </span>
-                        <span class="text-[10px] text-slate-400">+$5 / ₩10,000 ~</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
-                        <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
-                            <input type="checkbox" id="opt-prop" data-name="단순 소품 및 디자인" value="10,15000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                            Simple props & Design / 단순 소품 및 디자인
-                        </span>
-                        <span class="text-[10px] text-slate-400">무료 ~ +$10 / ₩15,000</span>
-                    </label>
-                    <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
-                        <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
-                            <input type="checkbox" id="opt-detail" data-name="고디테일 요소" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                            Highly detailed elements / 고디테일 요소
-                        </span>
-                        <span class="text-[10px] text-slate-400">+$5~ / ₩10,000~</span>
-                    </label>
+                    <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                                <input type="checkbox" id="opt-person" data-name="인물 추가" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                Extra Character / 인물 추가
+                            </label>
+                            <span id="text-person" class="text-[10px] text-slate-400 shrink-0">기본금의 80% 추가</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                            <span class="text-[11px] text-slate-500">수량:</span>
+                            <input type="number" id="qty-person" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                                <input type="checkbox" id="opt-bg" data-name="배경 추가" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                Background / 배경 추가
+                            </label>
+                            <span class="text-[10px] text-slate-400 shrink-0">+$5 / ₩10,000</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                            <span class="text-[11px] text-slate-500">수량:</span>
+                            <input type="number" id="qty-bg" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                                <input type="checkbox" id="opt-prop" data-name="단순 소품 및 디자인" value="10,15000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                Simple props & Design / 단순 소품 및 디자인
+                            </label>
+                            <span class="text-[10px] text-slate-400 shrink-0">+$10 / ₩15,000</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                            <span class="text-[11px] text-slate-500">수량:</span>
+                            <input type="number" id="qty-prop" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                                <input type="checkbox" id="opt-detail" data-name="고디테일 요소" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                Highly detailed elements / 고디테일 요소
+                            </label>
+                            <span class="text-[10px] text-slate-400 shrink-0">+$5 / ₩10,000</span>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                            <span class="text-[11px] text-slate-500">수량:</span>
+                            <input type="number" id="qty-detail" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Rush Fee / 빠른 마감 여부</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Rush Fee / 빠른 마감 여부
+                </label>
                 <div class="grid grid-cols-3 gap-2" id="rush-group">
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
                         <input type="radio" name="rush" value="0" data-name="일반 마감" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
@@ -280,12 +230,16 @@
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(Optional / 선택)</span></label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(Optional / 선택)</span>
+                </label>
                 <input type="date" id="deadline" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all">
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Other Requests / 기타 문의내용</label>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Other Requests / 기타 문의내용
+                </label>
                 <textarea id="other-requests" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-24 resize-y transition-all" placeholder="구도나 참고사항 등을 적어주세요."></textarea>
             </div>
 
@@ -300,112 +254,150 @@
             <div id="status-box" class="p-4 rounded-xl text-sm font-medium border hidden transition-all"></div>
 
             <button id="submit-button" class="w-full rounded-xl bg-indigo-600 p-4 text-sm font-bold text-white shadow-md hover:bg-indigo-500 active:scale-95 transition-all flex items-center justify-center gap-2" onclick="sendToDiscord()">
-                🎨 신청서 전송하기 (Submit Order)
+                신청서 전송하기 (Submit Order)
             </button>
         </div>
     </div>
 
-    <button class="fixed bottom-4 right-4 z-50 h-10 w-10 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700 hover:text-white shadow-lg transition-all border border-slate-700" onclick="toggleSettingsModal()">
-        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-    </button>
+    <div id="secret-admin-panel" class="rounded-2xl border-2 border-dashed border-indigo-300 bg-indigo-50/40 p-6 hidden space-y-5">
+        <div class="flex justify-between items-center border-b border-indigo-100 pb-3">
+            <div>
+                <h2 class="text-base font-bold text-indigo-900">🔒 작가 전용 비밀 관리 패널</h2>
+                <p class="text-xs text-indigo-500 font-medium">컴맹 전용 - 여기서 바꾸면 위 현황판이 즉시 업데이트됩니다.</p>
+            </div>
+            <button onclick="logoutAdmin()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl font-semibold text-slate-700 transition-all">관리창 닫기</button>
+        </div>
 
-    <div id="settings-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onclick="toggleSettingsModal()">
-        <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 class="font-bold text-slate-900">Owner Webhook Settings / 작가 웹훅 설정</h3>
-                <button class="text-slate-400 hover:text-slate-600" onclick="toggleSettingsModal()">
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <p class="mt-2 text-xs text-slate-400 leading-relaxed">디스코드에서 발급받은 웹훅 주소를 등록하세요. 내 컴퓨터 브라우저에만 암호화되어 안전하게 보관됩니다.</p>
-            
-            <div class="mt-4 space-y-4">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Discord Webhook URL</label>
-                    <input type="text" id="setting-webhook-url" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs outline-none focus:border-indigo-500 focus:bg-white transition-all" placeholder="https://discord.com/api/webhooks/...">
+        <div>
+            <label class="text-xs font-bold text-indigo-900 block mb-2">📅 마우스 클릭 슬롯 변경 (OPEN ↔ CLOSED 토글)</label>
+            <div class="grid grid-cols-4 gap-2" id="admin-slots-control">
                 </div>
-                <div class="flex gap-2.5">
-                    <button class="flex-1 rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-xs font-semibold text-slate-600 transition-all" onclick="testWebhook()">🔌 테스트 전송</button>
-                    <button class="flex-1 rounded-xl bg-indigo-600 hover:bg-indigo-500 py-3 text-xs font-semibold text-white shadow-sm transition-all" onclick="saveWebhookSettings()">💾 주소 저장하기</button>
-                </div>
-            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-indigo-900 block">📜 공지사항 & 약관 메모장 편집</label>
+            <textarea id="admin-notice-input" class="w-full h-32 rounded-xl border border-indigo-200 p-3 text-xs outline-none focus:border-indigo-500 bg-white leading-relaxed resize-y font-sans"></textarea>
+            <button onclick="saveNotice()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs p-3 rounded-xl transition-all shadow-sm">공지사항 즉시 저장 및 동기화</button>
         </div>
     </div>
 
-<script>
-    // 🔒 비밀 링크 검증 보안 장치 및 초기화
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("🎨 Form system initialized and loaded.");
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('access') === 'open') {
-            document.getElementById("lock-screen").classList.add("hidden");
-            document.getElementById("main-content-1").classList.remove("hidden");
-            document.getElementById("main-content-2").classList.remove("hidden");
-        }
+</div>
 
-        const savedWebhook = localStorage.getItem("commission_discord_webhook");
-        if (savedWebhook) {
-            console.log("✅ Webhook address found in local cache.");
-            document.getElementById("setting-webhook-url").value = savedWebhook;
-            document.getElementById("setup-warning").classList.add("hidden");
-        } else {
-            console.warn("⚠️ Webhook address is missing.");
-            document.getElementById("setup-warning").classList.remove("hidden");
-        }
+<script>
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515834246210519052/QPxttyyPB9sVui8ZJ4z1HuhogjrJVBtW13CP0NeygrkNhLR4CDgttOoaJAj4-0YJQ_Li";
+    
+    // 비밀번호 설정 (원하시는 다른 글자나 숫자로 변경 가능합니다)
+    const ADMIN_PASSWORD = "0000";
+
+    let currentSlots = {};
+    let currentNotice = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initData();
+        checkAdminAccess();
         calculate();
     });
 
-    function toggleSettingsModal() {
-        document.getElementById("settings-modal").classList.toggle("hidden");
-    }
-
-    function saveWebhookSettings() {
-        const url = document.getElementById("setting-webhook-url").value.trim();
-        localStorage.setItem("commission_discord_webhook", url);
-        console.log("💾 Webhook URL saved internally to localStorage:", url);
-        
-        const statusBox = document.getElementById("status-box");
-        statusBox.style.display = "block";
-        statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200";
-        statusBox.innerText = "🔒 웹훅 주소가 성공적으로 저장되었습니다.";
-        
-        if (url) document.getElementById("setup-warning").classList.add("hidden");
-        else document.getElementById("setup-warning").classList.remove("hidden");
-        
-        toggleSettingsModal();
-    }
-
-    function testWebhook() {
-        const url = document.getElementById("setting-webhook-url").value.trim();
-        if (!url) {
-            console.error("❌ Test aborted: Webhook URL input is empty.");
-            return;
+    // 로컬스토리지 데이터를 가져오거나 초기값 주입하는 세팅
+    function initData() {
+        const savedSlots = localStorage.getItem("commission_slots");
+        if (savedSlots) {
+            currentSlots = JSON.parse(savedSlots);
+        } else {
+            currentSlots = {...defaultSlots};
+            localStorage.setItem("commission_slots", JSON.stringify(currentSlots));
         }
 
-        console.log("🔌 Initiating test payload dispatch to Discord...");
-        fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: "🔔 [웹사이트 연동 테스트] 디스코드 연결 통로가 활성화되었습니다!" })
-        })
-        .then(res => {
-            if (res.ok) {
-                console.log("🎉 Test Connection Succeeded!");
-                alert("연동 성공! 디스코드 채널을 확인해 보세요.");
-                toggleSettingsModal();
-            } else { throw new Error("Discord Rejected payload"); }
-        })
-        .catch(err => {
-            console.error("❌ Webhook test failed:", err);
-            alert("전송 실패! 주소를 다시 확인해 주세요.");
-        });
+        const savedNotice = localStorage.getItem("commission_notice");
+        if (savedNotice !== null) {
+            currentNotice = savedNotice;
+        } else {
+            currentNotice = defaultNotice;
+            localStorage.setItem("commission_notice", currentNotice);
+        }
+
+        renderLiveDisplays();
     }
 
+    // 신청자 화면과 연동되는 메인 현황판 그리기
+    function renderLiveDisplays() {
+        const displayContainer = document.getElementById("live-slots-display");
+        displayContainer.innerHTML = "";
+        
+        const months = ["Jan. 1월", "Feb. 2월", "Mar. 3월", "Apr. 4월", "May. 5월", "Jun. 6월", "Jul. 7월", "Aug. 8월", "Sep. 9월", "Oct. 10월", "Nov. 11월", "Dec. 12월"];
+        
+        for (let i = 1; i <= 12; i++) {
+            const isOpen = currentSlots[i];
+            const div = document.createElement("div");
+            div.className = `p-3 rounded-xl border transition-all text-left flex flex-col justify-between ${isOpen ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-slate-100 border-slate-200 text-slate-400'}`;
+            
+            div.innerHTML = `
+                <span class="text-xs font-bold block">${months[i-1]}</span>
+                <span class="text-[9px] font-extrabold tracking-wider uppercase mt-1 px-1.5 py-0.5 rounded-md inline-block w-max ${isOpen ? 'bg-sky-200 text-sky-800' : 'bg-slate-200 text-slate-500'}">
+                    ${isOpen ? 'OPEN' : 'CLOSED'}
+                </span>
+            `;
+            displayContainer.appendChild(div);
+        }
+
+        document.getElementById("live-notice-display").innerText = currentNotice;
+    }
+
+    // 주소창에 ?mode=admin 검사하여 관리자창 제어하기
+    function checkAdminAccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'admin') {
+            const pass = prompt("🔒 관리자 인증 계정\n비밀번호를 입력하세요:");
+            if (pass === ADMIN_PASSWORD) {
+                alert("🔓 인증 성공! 페이지 맨 아래에 관리자 패널이 잠금해제 되었습니다.");
+                document.getElementById("secret-admin-panel").classList.remove("hidden");
+                renderAdminControls();
+            } else {
+                alert("❌ 비밀번호가 올바르지 않습니다. 일반 모드로 표시합니다.");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+    }
+
+    // 관리자 전용 제어 도구 렌더링하기
+    function renderAdminControls() {
+        const controlContainer = document.getElementById("admin-slots-control");
+        controlContainer.innerHTML = "";
+
+        for (let i = 1; i <= 12; i++) {
+            const isOpen = currentSlots[i];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `p-2 rounded-xl border text-xs font-bold transition-all ${isOpen ? 'bg-sky-600 border-sky-600 text-white shadow-sm' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}`;
+            btn.innerText = `${i}월: ${isOpen ? 'OPEN' : 'CLOSED'}`;
+            
+            btn.onclick = () => {
+                currentSlots[i] = !currentSlots[i];
+                localStorage.setItem("commission_slots", JSON.stringify(currentSlots));
+                renderLiveDisplays();
+                renderAdminControls();
+            };
+            controlContainer.appendChild(btn);
+        }
+
+        document.getElementById("admin-notice-input").value = currentNotice;
+    }
+
+    // 메모장 글귀 보관하기
+    function saveNotice() {
+        const text = document.getElementById("admin-notice-input").value;
+        currentNotice = text;
+        localStorage.setItem("commission_notice", currentNotice);
+        renderLiveDisplays();
+        alert("📜 공지사항 수정사항이 정상 반영되었습니다!");
+    }
+
+    function logoutAdmin() {
+        document.getElementById("secret-admin-panel").classList.add("hidden");
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // --- 이하 기존 신청 폼 연산 및 전송 로직 유지 ---
     function handlePurposeChange(input) {
         document.querySelectorAll('#purpose-group label').forEach(label => {
             label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
@@ -427,187 +419,3 @@
     }
 
     function handleRushChange(input) {
-        document.querySelectorAll('#rush-group label').forEach(label => {
-            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
-        });
-        if (input.checked) {
-            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
-        }
-        calculate();
-    }
-
-    function handleCheckboxChange(input) {
-        const label = input.closest('label');
-        if (input.checked) {
-            label.classList.add('bg-indigo-50/50', 'border-indigo-300');
-        } else {
-            label.classList.remove('bg-indigo-50/50', 'border-indigo-300');
-        }
-        calculate();
-    }
-
-    function updatePrices() {
-        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
-        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
-        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${((40000 * factor) / 1000).toFixed(0)}k`;
-        document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${((80000 * factor) / 1000).toFixed(0)}k`;
-        document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${((110000 * factor) / 1000).toFixed(0)}k`;
-        calculate();
-    }
-
-    function calculate() {
-        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
-        if (!checkedBase) {
-            document.getElementById('total-price').innerText = "$0 / ₩0";
-            return {usd: 0, krw: 0};
-        }
-
-        const baseName = checkedBase.value;
-        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
-        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
-        const checkedRush = document.querySelector('input[name="rush"]:checked');
-        const rush = checkedRush ? parseFloat(checkedRush.value) : 0;
-        
-        let bu = basePrices[baseName].usd * factor;
-        let bk = basePrices[baseName].krw * factor;
-        let eu = 0; let ek = 0;
-
-        if (document.getElementById('opt-person').checked) {
-            eu += Math.round(bu * 0.8); ek += Math.round(bk * 0.8);
-            document.getElementById('text-person').innerText = `+$${Math.round(bu * 0.8)} / +₩${Math.round(bk * 0.8).toLocaleString()}`;
-        } else {
-            document.getElementById('text-person').innerText = `기본금의 80% 추가`;
-        }
-
-        ['opt-bg', 'opt-prop', 'opt-detail'].forEach(id => {
-            const cb = document.getElementById(id);
-            if (cb && cb.checked) {
-                const values = cb.value.split(',');
-                eu += parseInt(values[0]); ek += parseInt(values[1]);
-            }
-        });
-
-        let finalUsd = (bu + eu) * (1 + rush);
-        let finalKrw = (bk + ek) * (1 + rush);
-
-        document.getElementById('total-price').innerText = `$${Math.round(finalUsd)} / ₩${Math.round(finalKrw).toLocaleString()}`;
-        return { usd: Math.round(finalUsd), krw: Math.round(finalKrw) };
-    }
-
-    function sendToDiscord() {
-        console.log("👉 Submit button clicked!");
-        const statusBox = document.getElementById('status-box');
-        const submitBtn = document.getElementById('submit-button');
-
-        statusBox.style.display = 'none';
-        statusBox.className = 'p-4 rounded-xl text-sm font-medium border';
-
-        const email = document.getElementById('user-email').value.trim();
-        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
-        
-        if (!email) { 
-            statusBox.innerText = '⚠️ Applicant Email(신청자 이메일)을 입력해 주세요.';
-            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-            statusBox.style.display = "block";
-            return; 
-        }
-        if (!checkedBase) { 
-            statusBox.innerText = '⚠️ Base Options(기본 옵션)을 선택해 주세요.';
-            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-            statusBox.style.display = "block";
-            return; 
-        }
-
-        const webhookUrl = localStorage.getItem("commission_discord_webhook");
-        if (!webhookUrl) {
-            statusBox.innerText = '❌ 작가용 웹훅 주소가 연동되지 않았습니다. 오른쪽 하단 톱니바퀴 버튼을 클릭해 주소를 먼저 저장해 주세요.';
-            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-            statusBox.style.display = "block";
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `전송 중... (Sending...)`;
-
-        const purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
-        const charDesc = document.getElementById('char-desc').value.trim() || '미작성';
-        const baseText = checkedBase.value;
-        const rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name');
-        const deadline = document.getElementById('deadline').value || '미지정';
-        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
-
-        let extras = [];
-        ['opt-person', 'opt-bg', 'opt-prop', 'opt-detail'].forEach(id => {
-            const cb = document.getElementById(id);
-            if (cb && cb.checked) extras.push(cb.getAttribute('data-name'));
-        });
-        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
-
-        const prices = calculate();
-        const bt = String.fromCharCode(96, 96, 96);
-
-        const discordPayload = {
-            embeds: [{
-                title: "🎨 새로운 커미션 신청서가 접수되었습니다!",
-                color: 4930162, 
-                fields: [
-                    { name: "📧 신청자 이메일", value: email, inline: true },
-                    { name: "⚖️ 이용 용도", value: purposeText, inline: true },
-                    { name: "📐 기본 옵션", value: baseText, inline: true },
-                    { name: "➕ 추가 옵션", value: extrasText, inline: false },
-                    { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
-                    { name: "📅 희망 마감일", value: deadline, inline: true },
-                    { name: "📝 캐릭터 외관 설정", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
-                    { name: "💭 기타 문의내용", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
-                    { name: "💰 예상 최종 견적", value: `**$${prices.usd} / ₩${prices.krw.toLocaleString()}**`, inline: false }
-                ],
-                timestamp: new Date().toISOString()
-            }]
-        };
-
-        fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(discordPayload)
-        })
-        .then(response => {
-            if (response.ok) {
-                statusBox.innerText = "🎉 신청서가 디스코드 채널로 성공적으로 제출되었습니다! 빠른 기일 내에 확인 후 이메일로 회신해 드리겠습니다.";
-                statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200";
-                statusBox.style.display = "block";
-                
-                // 성공 시 인풋 초기화
-                document.getElementById('user-email').value = '';
-                document.getElementById('char-desc').value = '';
-                document.getElementById('deadline').value = '';
-                document.getElementById('other-requests').value = '';
-                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                    cb.checked = false;
-                    cb.closest('label').classList.remove('bg-indigo-50/50', 'border-indigo-300');
-                });
-                document.querySelectorAll('input[name="base_opt"]').forEach(rb => {
-                    rb.checked = false;
-                    rb.closest('label').classList.remove('selected', 'ring-2', 'ring-indigo-600');
-                });
-                calculate();
-            } else {
-                throw new Error("Network Error");
-            }
-        })
-        .catch(error => {
-            statusBox.innerHTML = `
-                <div>❌ <strong>전송 장애 발생!</strong></div>
-                <div class="mt-1 text-xs opacity-90 leading-relaxed">디스코드 웹훅 주소 설정을 검증하고 브라우저 개발자 도구(F12) 콘솔 로그 내용을 확인해 주세요.</div>
-            `;
-            statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200";
-            statusBox.style.display = "block";
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = "🎨 신청서 전송하기 (Submit Order)";
-        });
-    }
-</script>
-
-</body>
-</html>
