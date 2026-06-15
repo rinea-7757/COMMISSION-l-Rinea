@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium Notion-optimized Commission Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2=family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -18,13 +18,14 @@
             }
         }
 
+        // 기본 가격 데이터 정의
         const basePrices = {
             "두상": { usd: 30, krw: 40000 },
             "반신": { usd: 60, krw: 80000 },
             "전신": { usd: 80, krw: 110000 }
         };
 
-        // 초기 기본 월별 슬롯 상태 데이터 (기본값 다 CLOSED로 설정, 언제든 관리자창에서 클릭으로 변경 가능)
+        // 초기 기본 월별 슬롯 상태 데이터 (관리자창에서 딸깍 클릭으로 실시간 변경 가능)
         const defaultSlots = {
             1: false, 2: false, 3: false, 4: false, 5: false, 6: false,
             7: false, 8: true, 9: true, 10: true, 11: true, 12: true
@@ -56,7 +57,7 @@
 <div class="mx-auto max-w-xl space-y-4">
     
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-base font-bold tracking-tight text-slate-900 mb-3 flex items-center gap-2">
+        <h2 class="text-sm font-bold tracking-tight text-slate-900 mb-3 flex items-center gap-2">
             📅 2026 SLOT STATUS 작업 슬롯 현황
         </h2>
         <div class="grid grid-cols-3 gap-2 text-center" id="live-slots-display">
@@ -263,7 +264,7 @@
         <div class="flex justify-between items-center border-b border-indigo-100 pb-3">
             <div>
                 <h2 class="text-base font-bold text-indigo-900">🔒 작가 전용 비밀 관리 패널</h2>
-                <p class="text-xs text-indigo-500 font-medium">컴맹 전용 - 여기서 바꾸면 위 현황판이 즉시 업데이트됩니다.</p>
+                <p class="text-xs text-indigo-500 font-medium">마우스로 슬롯 버튼을 클릭하거나 공지 텍스트를 고쳐보세요.</p>
             </div>
             <button onclick="logoutAdmin()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl font-semibold text-slate-700 transition-all">관리창 닫기</button>
         </div>
@@ -286,7 +287,7 @@
 <script>
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515834246210519052/QPxttyyPB9sVui8ZJ4z1HuhogjrJVBtW13CP0NeygrkNhLR4CDgttOoaJAj4-0YJQ_Li";
     
-    // 비밀번호 설정 (원하시는 다른 글자나 숫자로 변경 가능합니다)
+    // 비밀번호 설정 (작가님이 원하시는 네자리 숫자 등으로 자유롭게 변경 가능합니다)
     const ADMIN_PASSWORD = "0000";
 
     let currentSlots = {};
@@ -419,3 +420,214 @@
     }
 
     function handleRushChange(input) {
+        document.querySelectorAll('#rush-group label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        });
+        if (input.checked) {
+            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        }
+        calculate();
+    }
+
+    function handleCheckboxChange(input) {
+        const container = input.closest('.option-container');
+        const qtyWrapper = container.querySelector('.qty-wrapper');
+        
+        if (input.checked) {
+            container.classList.add('bg-indigo-50/50', 'border-indigo-300');
+            if(qtyWrapper) qtyWrapper.classList.remove('hidden');
+        } else {
+            container.classList.remove('bg-indigo-50/50', 'border-indigo-300');
+            if(qtyWrapper) qtyWrapper.classList.add('hidden');
+            const qtyInput = container.querySelector('input[type="number"]');
+            if(qtyInput) qtyInput.value = 1;
+        }
+        calculate();
+    }
+
+    function updatePrices() {
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        
+        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${(40000 * factor).toLocaleString()}`;
+        document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${(80000 * factor).toLocaleString()}`;
+        document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${(110000 * factor).toLocaleString()}`;
+        calculate();
+    }
+
+    function calculate() {
+        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
+        if (!checkedBase) {
+            document.getElementById('total-price').innerText = "$0 / ₩0";
+            return {usd: 0, krw: 0};
+        }
+
+        const baseName = checkedBase.value;
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        const checkedRush = document.querySelector('input[name="rush"]:checked');
+        const rush = checkedRush ? parseFloat(checkedRush.value) : 0;
+        
+        let bu = basePrices[baseName].usd * factor;
+        let bk = basePrices[baseName].krw * factor;
+        let eu = 0; let ek = 0;
+
+        if (document.getElementById('opt-person').checked) {
+            const qty = parseInt(document.getElementById('qty-person').value) || 1;
+            eu += Math.round(bu * 0.8) * qty; 
+            ek += Math.round(bk * 0.8) * qty;
+            document.getElementById('text-person').innerText = `+ $${Math.round(bu * 0.8)} / ₩${Math.round(bk * 0.8).toLocaleString()} (명당)`;
+        } else {
+            document.getElementById('text-person').innerText = `기본금의 80% 추가`;
+        }
+
+        const optIds = [
+            {id: 'opt-bg', qtyId: 'qty-bg'}, 
+            {id: 'opt-prop', qtyId: 'qty-prop'}, 
+            {id: 'opt-detail', qtyId: 'qty-detail'}
+        ];
+
+        optIds.forEach(item => {
+            const cb = document.getElementById(item.id);
+            if (cb && cb.checked) {
+                const values = cb.value.split(',');
+                const qty = parseInt(document.getElementById(item.qtyId).value) || 1;
+                eu += parseInt(values[0]) * qty; 
+                ek += parseInt(values[1]) * qty;
+            }
+        });
+
+        let finalUsd = (bu + eu) * (1 + rush);
+        let finalKrw = (bk + ek) * (1 + rush);
+
+        document.getElementById('total-price').innerText = `$${Math.round(finalUsd).toLocaleString()} / ₩${Math.round(finalKrw).toLocaleString()}`;
+        return { usd: Math.round(finalUsd), krw: Math.round(finalKrw) };
+    }
+
+    function sendToDiscord() {
+        const statusBox = document.getElementById('status-box');
+        const submitBtn = document.getElementById('submit-button');
+
+        statusBox.style.display = 'none';
+        statusBox.className = 'p-4 rounded-xl text-sm font-medium border';
+
+        const email = document.getElementById('user-email').value.trim();
+        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
+        
+        if (!email) { 
+            statusBox.innerText = '⚠️ Applicant Email(신청자 이메일)을 입력해 주세요.';
+            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            statusBox.style.display = "block";
+            return; 
+        }
+        if (!checkedBase) { 
+            statusBox.innerText = 'Base Options(기본 옵션)을 선택해 주세요.';
+            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            statusBox.style.display = "block";
+            return; 
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `전송 중... (Sending...)`;
+
+        const purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
+        const charDesc = document.getElementById('char-desc').value.trim() || '미작성';
+        const baseText = checkedBase.value;
+        const rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name');
+        const deadline = document.getElementById('deadline').value || '미지정';
+        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
+
+        let extras = [];
+        if (document.getElementById('opt-person').checked) {
+            extras.push(`인물 추가 (${document.getElementById('qty-person').value}명)`);
+        }
+        if (document.getElementById('opt-bg').checked) {
+            extras.push(`배경 추가 (${document.getElementById('qty-bg').value}개)`);
+        }
+        if (document.getElementById('opt-prop').checked) {
+            extras.push(`단순 소품 및 디자인 (${document.getElementById('qty-prop').value}개)`);
+        }
+        if (document.getElementById('opt-detail').checked) {
+            extras.push(`고디테일 요소 (${document.getElementById('qty-detail').value}개)`);
+        }
+        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
+
+        const prices = calculate();
+        const bt = "```";
+
+        const discordPayload = {
+            embeds: [{
+                title: "일감 받아라",
+                color: 4930162, 
+                fields: [
+                    { name: "📧 신청자 이메일 / 디스코드 아이디", value: email, inline: true },
+                    { name: "⚖️ 이용 용도", value: purposeText, inline: true },
+                    { name: "📐 기본 옵션", value: baseText, inline: true },
+                    { name: "➕ 추가 옵션 (수량)", value: extrasText, inline: false },
+                    { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
+                    { name: "📅 희망 마감일", value: deadline, inline: true },
+                    { name: "📝 캐릭터 외관 설정", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
+                    { name: "💭 기타 문의내용", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
+                    { name: "💰 예상 최종 견적", value: `**$${prices.usd.toLocaleString()} / ₩${prices.krw.toLocaleString()}**`, inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        const imageFile = document.getElementById('char-image').files[0];
+
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append("payload_json", JSON.stringify(discordPayload));
+            formData.append("file", imageFile);
+
+            fetch(DISCORD_WEBHOOK_URL, { method: "POST", body: formData })
+            .then(res => handleResponse(res))
+            .catch(err => handleError(err));
+        } else {
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(discordPayload)
+            })
+            .then(res => handleResponse(res))
+            .catch(err => handleError(err));
+        }
+
+        function handleResponse(response) {
+            if (response.ok) {
+                statusBox.innerText = "신청서와 첨부 이미지가 성공적으로 전송되었습니다!";
+                statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200";
+                statusBox.style.display = "block";
+                
+                document.getElementById('user-email').value = '';
+                document.getElementById('char-desc').value = '';
+                document.getElementById('char-image').value = '';
+                document.getElementById('deadline').value = '';
+                document.getElementById('other-requests').value = '';
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+                document.querySelectorAll('.qty-wrapper').forEach(w => w.classList.add('hidden'));
+                document.querySelectorAll('.option-container').forEach(c => c.className = "flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container");
+                calculate();
+            } else {
+                throw new Error("서버 응답 에러");
+            }
+            resetSubmitBtn();
+        }
+
+        function handleError(error) {
+            statusBox.innerHTML = `<div>❌ <strong>전송 오류 발생!</strong> 인터넷 연결 상태를 확인해 주세요.</div>`;
+            statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200";
+            statusBox.style.display = "block";
+            resetSubmitBtn();
+        }
+
+        function resetSubmitBtn() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "신청서 전송하기 (Submit Order)";
+        }
+    }
+</script>
+
+</body>
+</html>
