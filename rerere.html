@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Artist Commission Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                    }
+                }
+            }
+        }
+        const basePrices = {
+            "두상": { usd: 30, krw: 40000 },
+            "반신": { usd: 60, krw: 80000 },
+            "전신": { usd: 80, krw: 110000 }
+        };
+    </script>
+    <style>
+        body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+<div id="lock-screen" class="fixed inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center p-4 text-center hidden">
+    <div class="max-w-md bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+        <span class="text-4xl block mb-3">🔒</span>
+        <h2 class="text-lg font-bold text-slate-900">접근 제한 안내</h2>
+        <p class="mt-2 text-sm text-slate-500 leading-relaxed">본 페이지는 작가에게 직접 비밀 링크(암호화 주소)를 수령한 신청자분만 접근하실 수 있습니다.</p>
+    </div>
+</div>
+
+<div id="main-content" class="max-w-2xl mx-auto px-4 py-8 sm:py-12 space-y-12">
+    
+    <div class="text-center space-y-3">
+        <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full mx-auto shadow-md border-4 border-white flex items-center justify-center text-white text-3xl font-bold">
+            🎨 </div>
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">안녕하세요, 커미션 작가입니다 ✨</h1>
+        <p class="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">방문해 주셔서 감사합니다! 고품질의 일러스트와 맞춤형 캐릭터 디자인 디자인 작업을 진행하고 있습니다.</p>
+        
+        <div class="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-full border border-slate-200 text-xs font-semibold shadow-sm">
+            <span class="text-slate-400">슬롯 현황:</span>
+            <div class="flex gap-1.5">
+                <span class="text-indigo-600">● (작업중)</span>
+                <span class="text-indigo-600">● (작업중)</span>
+                <span class="text-slate-300">○ (비어있음)</span>
+            </div>
+            <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full text-[10px]">1자리 신청 가능!</span>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+        <div class="flex border-b border-slate-100 gap-4 text-sm font-bold">
+            <button onclick="switchTab('tab-notice')" id="btn-tab-notice" class="pb-3 text-indigo-600 border-b-2 border-indigo-600">📢 공지사항</button>
+            <button onclick="switchTab('tab-gallery')" id="btn-tab-gallery" class="pb-3 text-slate-400 hover:text-slate-600">🖼️ 샘플 보기</button>
+            <button onclick="switchTab('tab-collab')" id="btn-tab-collab" class="pb-3 text-slate-400 hover:text-slate-600">🤝 협업 작가</button>
+        </div>
+
+        <div id="tab-notice" class="tab-content active text-sm space-y-3 text-slate-600 leading-relaxed">
+            <p class="font-semibold text-slate-900">⚠️ 신청 전 필수 숙지 사항</p>
+            <ul class="list-disc pl-4 space-y-1 text-xs">
+                <li>모든 작업물의 저작권은 작가 본인에게 있습니다.</li>
+                <li>작업 기간은 최소 3일에서 최대 4주가 소요됩니다.</li>
+                <li>소품이 과도하게 추가되거나 복잡할 경우 추가 패널티가 발생할 수 있습니다.</li>
+                <li>환불은 스케치 작업 시작 전까지만 100% 가능합니다.</li>
+            </ul>
+        </div>
+
+        <div id="tab-gallery" class="tab-content text-sm">
+            <p class="text-xs text-slate-400 mb-3">이미지를 클릭하면 큰 화면으로 보실 수 있습니다.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-100 aspect-square rounded-xl flex items-center justify-center text-slate-400 font-medium border border-slate-200 cursor-pointer hover:opacity-90" onclick="alert('준비된 이미지 주소를 넣어주세요!')">샘플이미지 1</div>
+                <div class="bg-slate-100 aspect-square rounded-xl flex items-center justify-center text-slate-400 font-medium border border-slate-200 cursor-pointer hover:opacity-90" onclick="alert('준비된 이미지 주소를 넣어주세요!')">샘플이미지 2</div>
+            </div>
+        </div>
+
+        <div id="tab-collab" class="tab-content text-sm space-y-3">
+            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">👩‍🎨</div>
+                <div>
+                    <p class="font-bold text-xs text-slate-800">A 작가님 (배경 전문)</p>
+                    <p class="text-[11px] text-slate-400">일부 배경이 고도화된 스케줄의 콜라보레이션을 담당해 주십니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+        <div>
+            <h2 class="text-lg font-bold text-slate-900">🎨 Commission Order Form</h2>
+            <p class="mt-1 text-xs text-slate-400">실시간 총견적은 예상 금액이며, 상세 상담 후 변동될 수 있습니다.</p>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Applicant Email / 신청자 이메일</label>
+            <input type="email" id="user-email" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all" placeholder="example@email.com">
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Usage / 이용 용도</label>
+            <div class="grid grid-cols-2 gap-3" id="purpose-group">
+                <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
+                    <input type="radio" name="purpose" value="1" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
+                    <span class="text-sm font-semibold text-slate-900">Personal Use</span>
+                    <span class="text-[10px] text-slate-400 mt-1">개인 소장용</span>
+                </label>
+                <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
+                    <input type="radio" name="purpose" value="2" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
+                    <span class="text-sm font-semibold text-slate-900">Commercial Use</span>
+                    <span class="text-[10px] text-indigo-600 mt-1">상업용 (2배 적용)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Character Reference / 캐릭터 외관 설정</label>
+            <textarea id="char-desc" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-28 resize-y transition-all" placeholder="성별, 의상, 분위기 등을 적어주세요."></textarea>
+            <input type="file" id="char-image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer mt-1">
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Base Options / 기본 옵션</label>
+            <div class="grid grid-cols-3 gap-2" id="base-options">
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 text-center">
+                    <input type="radio" name="base_opt" value="두상" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">Bust-up</span>
+                    <span class="text-[9px] text-slate-500 mt-1" id="desc-두상">$30 / ₩40,000</span>
+                </label>
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 text-center">
+                    <input type="radio" name="base_opt" value="반신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">Half-body</span>
+                    <span class="text-[9px] text-slate-500 mt-1" id="desc-반신">$60 / ₩80,000</span>
+                </label>
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 text-center">
+                    <input type="radio" name="base_opt" value="전신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">Full-body</span>
+                    <span class="text-[9px] text-slate-500 mt-1" id="desc-전신">$80 / ₩110,000</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Add-ons & Extra Fees / 추가 옵션</label>
+            <div class="space-y-2">
+                <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white option-container">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                            <input type="checkbox" id="opt-person" data-name="인물 추가" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                            Extra Character / 인물 추가
+                        </label>
+                        <span id="text-person" class="text-[10px] text-slate-400 shrink-0">기본금의 80% 추가</span>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                        <span class="text-[11px] text-slate-500">수량:</span>
+                        <input type="number" id="qty-person" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs" onchange="calculate()">
+                    </div>
+                </div>
+                <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white option-container">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
+                            <input type="checkbox" id="opt-bg" data-name="배경 추가" value="5,10000" class="rounded border-slate-300 text-indigo-600" onchange="handleCheckboxChange(this)">
+                            Background / 배경 추가
+                        </label>
+                        <span class="text-[10px] text-slate-400 shrink-0">+$5 / ₩10,000</span>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
+                        <span class="text-[11px] text-slate-500">수량:</span>
+                        <input type="number" id="qty-bg" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs" onchange="calculate()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Rush Fee / 빠른 마감 여부</label>
+            <div class="grid grid-cols-3 gap-2" id="rush-group">
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer text-center selected ring-2 ring-indigo-600">
+                    <input type="radio" name="rush" value="0" data-name="일반 마감" checked class="absolute inset-0 opacity-0" onchange="handleRushChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">Normal</span>
+                    <span class="text-[9px] text-slate-400 mt-1">최대 4주</span>
+                </label>
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer text-center">
+                    <input type="radio" name="rush" value="0.3" data-name="2주 마감" class="absolute inset-0 opacity-0" onchange="handleRushChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">2 Weeks</span>
+                    <span class="text-[9px] text-indigo-600 mt-1">+30%</span>
+                </label>
+                <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer text-center">
+                    <input type="radio" name="rush" value="0.5" data-name="1주 마감" class="absolute inset-0 opacity-0" onchange="handleRushChange(this)">
+                    <span class="text-xs font-semibold text-slate-900">1 Week</span>
+                    <span class="text-[9px] text-indigo-600 mt-1">+50%</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Deadline / 희망 마감일</label>
+            <input type="date" id="deadline" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all">
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Other Requests / 기타 문의내용</label>
+            <textarea id="other-requests" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-24 resize-y" placeholder="구도나 참고 자료 설명 기술 기술"></textarea>
+            <input type="file" id="req-image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer mt-1">
+        </div>
+
+        <div class="rounded-2xl bg-slate-900 p-5 flex justify-between items-center text-white">
+            <div>
+                <span class="text-[10px] font-bold tracking-widest text-indigo-400 block uppercase">Estimated Cost</span>
+                <span class="text-xs text-slate-400">예상 총 견적액 (변동가능)</span>
+            </div>
+            <div class="text-xl font-extrabold text-right text-indigo-200" id="total-price">$0 / ₩0</div>
+        </div>
+
+        <div id="status-box" class="p-4 rounded-xl text-sm font-medium border hidden"></div>
+
+        <button id="submit-button" class="w-full rounded-xl bg-indigo-600 p-4 text-sm font-bold text-white shadow-md hover:bg-indigo-500 transition-all" onclick="sendToDiscord()">
+            🎨 신청서 전송하기 (Submit Order)
+        </button>
+    </div>
+</div>
+
+<script>
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515834246210519052/QPxttyyPB9sVui8ZJ4z1HuhogjrJVBtW13CP0NeygrkNhLR4CDgttOoaJAj4-0YJQ_Li";
+
+    // 🔒 1번 조건: 특정 주소 매개변수(?access=open) 체크 스크립트
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessKey = urlParams.get('access');
+
+        if (accessKey !== 'open') {
+            document.getElementById('lock-screen').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+        } else {
+            calculate();
+        }
+    });
+
+    // 탭 전환 기능
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        const tabs = ['notice', 'gallery', 'collab'];
+        tabs.forEach(t => {
+            const btn = document.getElementById(`btn-tab-${t}`);
+            if(`tab-${t}` === tabId) {
+                btn.className = "pb-3 text-indigo-600 border-b-2 border-indigo-600";
+            } else {
+                btn.className = "pb-3 text-slate-400 hover:text-slate-600";
+            }
+        });
+    }
+
+    // 기존 신청서 로직 연동 (중략 - 기존 완벽 작동하던 계산/디코드 전송 코드와 동일하게 적용 완료)
+    function handlePurposeChange(input) {
+        document.querySelectorAll('#purpose-group label').forEach(label => label.classList.remove('selected', 'ring-2', 'ring-indigo-600'));
+        if (input.checked) input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        updatePrices();
+    }
+    function handleBaseChange(input) {
+        document.querySelectorAll('#base-options label').forEach(label => label.classList.remove('selected', 'ring-2', 'ring-indigo-600'));
+        if (input.checked) input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        calculate();
+    }
+    function handleRushChange(input) {
+        document.querySelectorAll('#rush-group label').forEach(label => label.classList.remove('selected', 'ring-2', 'ring-indigo-600'));
+        if (input.checked) input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
+        calculate();
+    }
+    function handleCheckboxChange(input) {
+        const container = input.closest('.option-container');
+        const qtyWrapper = container.querySelector('.qty-wrapper');
+        if (input.checked) {
+            container.classList.add('bg-indigo-50/50', 'border-indigo-300');
+            if(qtyWrapper) qtyWrapper.classList.remove('hidden');
+        } else {
+            container.classList.remove('bg-indigo-50/50', 'border-indigo-300');
+            if(qtyWrapper) qtyWrapper.classList.add('hidden');
+            const qtyInput = container.querySelector('input[type="number"]');
+            if(qtyInput) qtyInput.value = 1;
+        }
+        calculate();
+    }
+    function updatePrices() {
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${(40000 * factor).toLocaleString()}`;
+        document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${(80000 * factor).toLocaleString()}`;
+        document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${(110000 * factor).toLocaleString()}`;
+        calculate();
+    }
+    function calculate() {
+        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
+        if (!checkedBase) { document.getElementById('total-price').innerText = "$0 / ₩0"; return {usd: 0, krw: 0}; }
+        const baseName = checkedBase.value;
+        const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
+        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
+        const checkedRush = document.querySelector('input[name="rush"]:checked');
+        const rush = checkedRush ? parseFloat(checkedRush.value) : 0;
+        let bu = basePrices[baseName].usd * factor; let bk = basePrices[baseName].krw * factor;
+        let eu = 0; let ek = 0;
+        if (document.getElementById('opt-person').checked) {
+            const qty = parseInt(document.getElementById('qty-person').value) || 1;
+            eu += Math.round(bu * 0.8) * qty; ek += Math.round(bk * 0.8) * qty;
+            document.getElementById('text-person').innerText = `+ $${Math.round(bu * 0.8)} / ₩${Math.round(bk * 0.8).toLocaleString()} (명당)`;
+        } else { document.getElementById('text-person').innerText = `기본금의 80% 추가`; }
+        const cb = document.getElementById('opt-bg');
+        if (cb && cb.checked) {
+            const values = cb.value.split(','); const qty = parseInt(document.getElementById('qty-bg').value) || 1;
+            eu += parseInt(values[0]) * qty; ek += parseInt(values[1]) * qty;
+        }
+        let finalUsd = (bu + eu) * (1 + rush); let finalKrw = (bk + ek) * (1 + rush);
+        document.getElementById('total-price').innerText = `$${Math.round(finalUsd).toLocaleString()} / ₩${Math.round(finalKrw).toLocaleString()}`;
+        return { usd: Math.round(finalUsd), krw: Math.round(finalKrw) };
+    }
+    function sendToDiscord() {
+        const statusBox = document.getElementById('status-box'); const submitBtn = document.getElementById('submit-button');
+        statusBox.style.display = 'none'; statusBox.className = 'p-4 rounded-xl text-sm font-medium border';
+        const email = document.getElementById('user-email').value.trim(); const checkedBase = document.querySelector('input[name="base_opt"]:checked');
+        if (!email || !checkedBase) { statusBox.innerText = '⚠️ 이메일 입력 및 기본 옵션을 선택해 주세요.'; statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200 block"; return; }
+        submitBtn.disabled = true; submitBtn.innerHTML = `전송 중...`;
+        const purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
+        const charDesc = document.getElementById('char-desc').value.trim() || '미작성'; const baseText = checkedBase.value;
+        const rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name'); const deadline = document.getElementById('deadline').value || '미지정';
+        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
+        let extras = [];
+        if (document.getElementById('opt-person').checked) extras.push(`인물 추가 (${document.getElementById('qty-person').value}명)`);
+        if (document.getElementById('opt-bg').checked) extras.push(`배경 추가 (${document.getElementById('qty-bg').value}개)`);
+        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
+        const prices = calculate(); const bt = "```";
+        const discordPayload = {
+            embeds: [
+                {
+                    title: "🎨 전용 페이지 커미션 신청 접수!", color: 4930162,
+                    fields: [
+                        { name: "📧 신청자 이메일", value: email, inline: true },
+                        { name: "⚖️ 이용 용도", value: purposeText, inline: true },
+                        { name: "📐 기본 옵션", value: baseText, inline: true },
+                        { name: "➕ 추가 옵션 (수량)", value: extrasText, inline: false },
+                        { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
+                        { name: "📅 희망 마감일", value: deadline, inline: true },
+                        { name: "📝 캐릭터 외관 설정", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
+                        { name: "💭 기타 문의내용", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
+                        { name: "💰 예상 최종 견적", value: `**$${prices.usd.toLocaleString()} / ₩${prices.krw.toLocaleString()}**`, inline: false }
+                    ],
+                    image: { url: "attachment://char_image.png" }
+                },
+                { color: 4930162, title: "💭 기타 문의 참고 이미지", image: { url: "attachment://req_image.png" } }
+            ]
+        };
+        const charImageFile = document.getElementById('char-image').files[0]; const reqImageFile = document.getElementById('req-image').files[0];
+        if (charImageFile || reqImageFile) {
+            const formData = new FormData();
+            if (!charImageFile) discordPayload.embeds[0].image = undefined; else formData.append("files[0]", charImageFile, "char_image.png");
+            if (!reqImageFile) discordPayload.embeds.pop(); else formData.append("files[1]", reqImageFile, "req_image.png");
+            formData.append("payload_json", JSON.stringify(discordPayload));
+            fetch(DISCORD_WEBHOOK_URL, { method: "POST", body: formData }).then(res => handleResponse(res)).catch(err => handleError(err));
+        } else {
+            discordPayload.embeds.pop(); discordPayload.embeds[0].image = undefined;
+            fetch(DISCORD_WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(discordPayload) }).then(res => handleResponse(res)).catch(err => handleError(err));
+        }
+        function handleResponse(response) {
+            if (response.ok) {
+                statusBox.innerText = "🎉 전용 홈페이지에서 신청서가 성공적으로 전송되었습니다!";
+                statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block";
+                document.getElementById('user-email').value = ''; document.getElementById('char-desc').value = ''; document.getElementById('char-image').value = '';
+                document.getElementById('other-requests').value = ''; document.getElementById('req-image').value = ''; document.getElementById('deadline').value = '';
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.qty-wrapper').forEach(w => w.classList.add('hidden'));
+                calculate();
+            } else { throw new Error("에러"); }
+            submitBtn.disabled = false; submitBtn.innerHTML = "🎨 신청서 전송하기 (Submit Order)";
+        }
+        function handleError(error) {
+            statusBox.innerHTML = `<div>❌ 전송 실패!</div>`; statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200 block";
+            submitBtn.disabled = false; submitBtn.innerHTML = "🎨 신청서 전송하기 (Submit Order)";
+        }
+    }
+</script>
+</body>
+</html>
