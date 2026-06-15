@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Notion-optimized Commission Form</title>
+    <title>Premium Commission Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2=family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -13,31 +13,44 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        pastelTeal: {
+                            100: '#e0f2fe',
+                            200: '#ccfbf1',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                        },
+                        pastelPink: {
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                        }
                     }
                 }
             }
         }
 
-        // 기본 가격 데이터 정의
+        // 고정 가격 데이터 정의 (달러 및 원화 완벽 매핑 규칙 반영)
         const basePrices = {
             "두상": { usd: 30, krw: 40000 },
             "반신": { usd: 60, krw: 80000 },
-            "전신": { usd: 80, krw: 110000 }
+            "전신": { usd: 80, krw: 110000 },
+            "버츄얼": { usd: 550, krw: 700000 }
         };
 
-        // 초기 기본 월별 슬롯 상태 데이터 (관리자창에서 딸깍 클릭으로 실시간 변경 가능)
         const defaultSlots = {
             1: false, 2: false, 3: false, 4: false, 5: false, 6: false,
             7: false, 8: true, 9: true, 10: true, 11: true, 12: true
         };
 
-        // 초기 기본 공지사항 데이터
-        const defaultNotice = `[공지사항 및 약관]\n\n• 모든 저작권은 작가에게 있습니다.\n• 작업 기간은 최소 1주에서 최대 4주 소요됩니다.\n• 슬롯 현황을 확인하신 후 신청해 주세요!`;
+        const defaultNotice = `[공지사항 및 약관]\n\n• 모든 저작권은 작가에게 있습니다.\n• 작업 기간은 최소 1주에서 최대 4주 소요됩니다.\n• 슬롯 현황을 확인하신 후 신청해 주세요!\n• 버츄얼 모델 일러스트는 기본적으로 상업용/방송용 권한을 온전히 포함하여 PSD 원본 파츠 분리본으로 전달됩니다 (리깅 미포함).`;
     </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #fcfcfc;
             -webkit-tap-highlight-color: transparent;
         }
         ::-webkit-scrollbar {
@@ -50,52 +63,258 @@
             background: #cbd5e1;
             border-radius: 3px;
         }
+        /* 아코디언 애니메이션용 스타일 */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
     </style>
 </head>
 <body class="p-2 sm:p-4 text-slate-800 bg-slate-50 min-h-screen pb-24">
 
-<div class="mx-auto max-w-xl space-y-4">
+<div class="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
     
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-sm font-bold tracking-tight text-slate-900 mb-3 flex items-center gap-2">
-            📅 2026 SLOT STATUS 작업 슬롯 현황
-        </h2>
-        <div class="grid grid-cols-3 gap-2 text-center" id="live-slots-display">
+    <div class="space-y-4 w-full">
+        
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-3">
+                SLOT STATUS / 작업 슬롯 현황
+            </h2>
+            <div class="grid grid-cols-3 gap-2 text-center" id="live-slots-display"></div>
+        </div>
+
+        <div class="space-y-2.5">
+            
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <button onclick="toggleAccordion('acc-notice')" class="w-full flex items-center justify-between p-4 focus:outline-none hover:bg-slate-50 transition-all">
+                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">Notice & Terms / 공지 및 약관</span>
+                    <svg id="arrow-acc-notice" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="acc-notice" class="accordion-content max-h-0 overflow-hidden bg-slate-50">
+                    <div id="live-notice-display" class="text-xs text-slate-600 p-4 border-t border-slate-100 whitespace-pre-wrap leading-relaxed"></div>
+                </div>
             </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <button onclick="toggleAccordion('acc-illust-prices')" class="w-full flex items-center justify-between p-4 focus:outline-none hover:bg-slate-50 transition-all">
+                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">Illustration Price List / 그림 커미션 가격표</span>
+                    <svg id="arrow-acc-illust-prices" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="acc-illust-prices" class="accordion-content max-h-0 overflow-hidden bg-slate-50">
+                    <div class="text-xs text-slate-600 p-4 border-t border-slate-100 space-y-3 leading-relaxed">
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Personal Use 개인 소장용</h4>
+                            <div class="flex justify-between text-[11px] mb-0.5"><span>Bust-up 두상</span><span class="font-bold text-slate-700">$30 | ₩40,000</span></div>
+                            <div class="flex justify-between text-[11px] mb-0.5"><span>Half-body 반신</span><span class="font-bold text-slate-700">$60 | ₩80,000</span></div>
+                            <div class="flex justify-between text-[11px]"><span>Full-body 전신</span><span class="font-bold text-slate-700">$80 | ₩110,000</span></div>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Commercial Use 상업용 | 방송용</h4>
+                            <div class="flex justify-between text-[11px] mb-0.5"><span>Bust-up 두상</span><span class="font-bold text-slate-700">$60 | ₩80,000</span></div>
+                            <div class="flex justify-between text-[11px] mb-0.5"><span>Half-body 반신</span><span class="font-bold text-slate-700">$120 | ₩160,000</span></div>
+                            <div class="flex justify-between text-[11px]"><span>Full-body 전신</span><span class="font-bold text-slate-700">$160 | ₩220,000</span></div>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Add-ons & Extra Fees 추가금 안내</h4>
+                            <p class="text-[10px] text-slate-500 mb-1.5"><strong class="text-slate-700">Extra Character 인물 추가:</strong> +80% of the base price per character 인물 추가 시 1인당 기본 금액의 80% 추가</p>
+                            <p class="text-[10px] text-slate-500 mb-1.5"><strong class="text-slate-700">Complex Designs & Props 복잡한 디자인 및 소품:</strong> Price varies depending on complexity. 디자인이나 소품의 복잡도에 따라 가격이 추가됩니다. (예: 배경추가, 디테일한 갑옷, 복잡한 무기, 날개, 화려한 패턴 등 - 사전에 문의해 주세요.)</p>
+                            <p class="text-[10px] text-slate-500 mb-1.5"><strong class="text-slate-700">Simple props & Design 단순 소품 및 디자인:</strong> Free ~ +$[10] l 무료 ~ ₩[15,000]</p>
+                            <p class="text-[10px] text-slate-500"><strong class="text-slate-700">Highly detailed elements 고디테일 요소:</strong> +$[5]~ / ₩[10,000]~</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Rush Fee 빠른 마감</h4>
+                            <div class="flex justify-between text-[11px] mb-0.5"><span>Within 1 week 1주 이내</span><span class="font-bold text-slate-700">+50% of the total price 총 금액의 50% 추가</span></div>
+                            <div class="flex justify-between text-[11px]"><span>Within 2 weeks 2주 이내</span><span class="font-bold text-slate-700">+30% of the total price 총 금액의 30% 추가</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <button onclick="toggleAccordion('acc-virtual-prices')" class="w-full flex items-center justify-between p-4 focus:outline-none hover:bg-slate-50 transition-all">
+                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">Virtual Price List / 버츄얼 커미션 가격표</span>
+                    <svg id="arrow-acc-virtual-prices" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="acc-virtual-prices" class="accordion-content max-h-0 overflow-hidden bg-slate-50">
+                    <div class="text-xs text-slate-600 p-4 border-t border-slate-100 space-y-3 leading-relaxed">
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">FULL BODY 전신 모델</h4>
+                            <p class="text-[10px] text-slate-500 mb-1.5">Art only, rigging is NOT included. PSD file with standard layer separation for Live2D rigging will be delivered. 일러스트 작업만 포함되며, 리깅은 포함되지 않습니다. Live2D 리깅이 가능한 파츠 분리 완료된 PSD 파일로 제공됩니다.</p>
+                            <p class="text-[10px] text-slate-700 font-bold">Starting Price 시작가: $550~ | ₩700,000~</p>
+                            <p class="text-[9px] text-slate-400 mt-0.5">※ Character design fee may be added if you don't have a reference sheet. 캐릭터 설정화나 디자인이 없는 경우 디자인 비용이 추가될 수 있습니다.</p>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Included Standard Separation 기본적으로 포함되는 파츠 분리 사항</h4>
+                            <p class="text-[9px] text-slate-400 mb-2">The model will be separated into standard layers below. If your rigger requires a specific or highly detailed separation layout, please let me know before I start coloring. 모델은 아래의 표준 레이어로 분리되어 제공됩니다. 고용하신 리깅 작가님의 더 디테일한 파츠 분리 요구사항이 있다면 채색 시작 전에 미리 알려주세요.</p>
+                            <div class="space-y-1.5 text-[10px] text-slate-600">
+                                <p><strong class="text-slate-800">· Face 얼굴:</strong> Eyebrows, Eyelids (Upper/Lower), Eyeballs (Iris, Pupil, Highlights), Sclera, Nose, Lips (Upper/Lower), Mouth inside (Teeth, Tongue), Blushes, Ears. 눈썹, 눈꺼풀 위/아래, 동공, 홍채, 하이라이트, 흰자, 코, 입술 위/아래, 입 안(치아, 혀), 홍조, 귀</p>
+                                <p><strong class="text-slate-800">· Hair 머리카락:</strong> Bangs(Front), Side hair, Back hair, Ahoge/Stray hairs (if any). 앞머리, 옆머리, 뒷머리, 바보털 등</p>
+                                <p><strong class="text-slate-800">· Body & Outfit 몸 및 의상:</strong> Neck, Torso, Arms (Upper/Lower/Hands separated), Legs (Upper/Lower/Feet separated), Clothes parts, Accessories. 목, 상체, 팔(상완/하완/손 분리), 다리(허벅지/종아리/발 분리), 옷 파츠별, 장신구</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Expressions & Assets 표정 및 소품 추가</h4>
+                            <p class="text-[10px] text-slate-600"><strong class="text-slate-800">· Expressions 기본제공 외 표정 추가:</strong> +$15 | ₩20,000 per expression (개당 추가)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <button onclick="toggleAccordion('acc-faq')" class="w-full flex items-center justify-between p-4 focus:outline-none hover:bg-slate-50 transition-all">
+                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">FAQ & Q&A / 자주 묻는 질문</span>
+                    <svg id="arrow-acc-faq" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="acc-faq" class="accordion-content max-h-0 overflow-hidden bg-slate-50">
+                    <div class="text-xs text-slate-600 p-4 border-t border-slate-100 space-y-3 leading-relaxed">
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q1. 캐릭터 설정화나 참고 자료가 아예 없는 상태에서도 신청이 가능한가요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 죄송하지만 무에서 유를 만드는 신규 캐릭터 디자인 서비스는 제공하지 않습니다. 원활한 작업을 위해 캐릭터의 외관, 의상, 색상 정보 등이 명확히 기재된 설정화나 참고 이미지 자료가 반드시 준비되어 있어야 신청이 가능합니다.</p>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q2. 버츄얼 일러스트 최종 작업물은 어떤 사양과 파일 형태로 받게 되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 리깅 작가님이 즉시 작업에 착수하실 수 있도록 완벽히 파츠 분리된 포토샵 원본 파일(PSD)로 제공됩니다. 해상도는 기본 300dpi 고화질로 작업하여 전달해 드립니다.</p>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q3. 중간 컨펌은 구체적으로 어떤 방식으로 진행되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 신청서에 작성해 주신 연락처(이메일 또는 디스코드)로 스케치(러프) 단계를 송부해 드립니다. 러프 단계 내에서 최대 2회까지 피드백을 반영한 무상 수정이 진행되며, 승인 이후 선화 및 채색 단계로 넘어갑니다.</p>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q4. 일반 커미션의 '상업용 권한'과 버츄얼의 '저작권 영구 양도'는 어떻게 다른가요?</h4>
+                            <p class="text-[11px] text-slate-500">A. '상업용 권한'은 방송 송출 및 수익 창출 콘텐츠에 작업물을 사용할 수 있는 권리이며, '저작권 영구 양도'는 저작권 자체를 완전히 양도받아 상업적 굿즈 제작, 소스 2차 가공 등을 제약 없이 자유롭게 할 수 있는 권리입니다.</p>
+                        </div>
+                        <div class="border-b border-slate-100 pb-2">
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q5. 제휴 리깅 작가인 아이자와 리코 작가님과의 협업 작업은 어떻게 연동되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 일러스트 작업(파츠 분리 완료된 PSD 파일)이 최종 승인되면, 연동 제휴를 통해 리코 작가님께서 바로 리깅 작업을 이어서 진행하실 수 있도록 레이어 구조와 사양을 완벽히 맞춰서 안전하게 연동해 드립니다.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q6. 신청서를 보낸 후에도 상세 옵션을 수정하거나 일정을 조율할 수 있나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 네, 가능합니다! 전송해 주신 신청서를 바탕으로 1차 확인 후, 기재해 주신 연락처를 통해 상담을 진행하며 세부적인 연출이나 일정을 유동적으로 최종 조율해 드립니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-r from-pastelTeal-100 to-pastelPink-100 p-5 shadow-sm space-y-3">
+            <span class="text-[10px] font-extrabold tracking-wider bg-white/80 border border-slate-200/50 text-slate-600 px-2.5 py-1 rounded-full uppercase">
+                FEATURED PARTNER / 협업 리깅 작가
+            </span>
+            
+            <div class="flex items-center gap-4 bg-white/60 p-3.5 rounded-xl border border-white/80">
+                <div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-cyan-200 to-pink-200 shrink-0 flex items-center justify-center text-slate-500 font-bold text-sm">
+                    L2D
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">아이자와 리코 (愛沢莉子)</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">부드러운 모션과 물리엔진 커스텀 설계 장인. 저와 협업하여 작업을 연동하실 수 있습니다.</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <a href="https://x.com/RIKO_S2RK" target="_blank" class="flex-1 text-center bg-slate-900 text-[11px] text-white py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition-all">리깅 다이렉트 문의</a>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
+                    DIRECT CONTACT / 1대1 문의창구
+                </h2>
+                <span class="text-[9px] font-bold bg-indigo-50 text-indigo-500 border border-indigo-100 px-2 py-0.5 rounded-full">디스코드 연동</span>
+            </div>
+            <p class="text-[11px] text-slate-500 pb-1">신청 전 단순 질문이나 복잡한 추가 옵션 조율이 필요하시다면 편하게 남겨주세요!</p>
+            <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="inq-name" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="이름 / 닉네임">
+                    <input type="text" id="inq-contact" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="연락처 (Discord/Email)">
+                </div>
+                <textarea id="inq-msg" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white h-20 resize-none transition-all" placeholder="궁금하신 점을 자유롭게 적어주세요."></textarea>
+                <button type="button" id="inq-btn" onclick="sendInquiry()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all shadow-sm">
+                    문의 전송하기
+                </button>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
+                Artwork Samples / 포트폴리오 샘플
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
+                    [그림 샘플 1 위치]
+                </div>
+                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
+                    [그림 샘플 2 위치]
+                </div>
+                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
+                    [그림 샘플 3 위치]
+                </div>
+                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
+                    [그림 샘플 4 위치]
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="text-sm font-bold tracking-tight text-slate-900 mb-2 flex items-center gap-2">
-            📜 Notice & Terms / 공지 및 약관
-        </h2>
-        <div id="live-notice-display" class="text-xs text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100 whitespace-pre-wrap leading-relaxed">
-            </div>
-    </div>
-
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-4 w-full">
+        
+        <div class="border-b border-slate-100 pb-4 space-y-4">
             <div>
-                <h1 class="text-xl font-bold tracking-tight text-slate-900">
-                    Order Form / 신청양식
-                </h1>
-                <p class="mt-1 text-xs text-slate-400">옵션을 체크하면 실시간 총견적이 자동 계산됩니다.</p>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900">Order Form / 신청양식</h1>
+                <p class="mt-1 text-xs text-slate-400">원하시는 커미션 종류를 선택한 뒤 양식을 채워주세요.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-xl relative">
+                <button type="button" id="tab-illust" onclick="switchFormTab('illust')" class="py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-sm relative z-10">
+                    그림 커미션
+                </button>
+                <button type="button" id="tab-virtual" onclick="switchFormTab('virtual')" class="py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900">
+                    버츄얼 커미션
+                </button>
             </div>
         </div>
 
         <div class="mt-6 space-y-6">
+            
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Applicant Email / 신청자 이메일 & 디스코드 아이디
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Applicant Email / 신청자 이메일 및 디스코드 아이디
                 </label>
-                <input type="email" id="user-email" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all" placeholder="example@email.com / @username">
+                <input type="email" id="user-email" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="example@email.com / @username">
             </div>
 
-            <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Usage / 이용 용도
-                </label>
+            <div id="virtual-only-profile" class="space-y-4 hidden animate-fade">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Platform / 방송 플랫폼 & 닉네임</label>
+                        <input type="text" id="v-platform" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="트위치 / 유튜브 등 및 활동명">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Debut Date / 데뷔 예정일</label>
+                        <input type="date" id="v-debut" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white transition-all">
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Collaborator / 협업 리깅작가 연동여부</label>
+                    <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 leading-relaxed">
+                        본 신청서는 자동으로 <strong class="text-slate-800">아이자와 리코</strong>님과 연동 처리가 접수되어 협업 혜택이 적용됩니다. (원치 않으실 경우 하단 기타 요청란에 메모해 주세요.)
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5" id="wrapper-purpose-field">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Usage / 이용 용도</label>
                 <div class="grid grid-cols-2 gap-3" id="purpose-group">
-                    <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
+                    <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-cyan-400">
                         <input type="radio" name="purpose" value="1" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
                         <span class="text-sm font-semibold text-slate-900">Personal Use</span>
                         <span class="text-[10px] text-slate-400 mt-1">개인 소장용</span>
@@ -103,275 +322,664 @@
                     <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="purpose" value="2" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handlePurposeChange(this)">
                         <span class="text-sm font-semibold text-slate-900">Commercial Use</span>
-                        <span class="text-[10px] text-indigo-600 mt-1">상업용 (2배 적용)</span>
+                        <span class="text-[10px] text-pink-500 mt-1">상업용 (2배 적용)</span>
                     </label>
                 </div>
             </div>
+            
+            <div id="virtual-only-rights" class="space-y-4 hidden">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Agency Classification / 기업세 및 개인세 여부</label>
+                    <div class="grid grid-cols-2 gap-3" id="agency-group">
+                        <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-cyan-400">
+                            <input type="radio" name="agency" value="individual" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleAgencyChange(this)">
+                            <span class="text-sm font-semibold text-slate-900">Individual (개인세)</span>
+                        </label>
+                        <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
+                            <input type="radio" name="agency" value="corporate" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleAgencyChange(this)">
+                            <span class="text-sm font-semibold text-slate-900">Corporate (기업세)</span>
+                        </label>
+                    </div>
+                </div>
 
-            <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Character Reference / 캐릭터 외관 설정
-                </label>
-                <textarea id="char-desc" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-28 resize-y transition-all" placeholder="성별, 의상, 분위기 등을 최대한 상세히 적어주세요."></textarea>
-                
-                <div class="mt-2">
-                    <label class="text-[11px] font-semibold text-slate-400 block mb-1">참조 이미지 첨부 (Optional)</label>
-                    <input type="file" id="char-image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
-                    <p class="text-[10px] text-slate-400 mt-1">※ 이미지는 디스코드에 파일로 함께 전송됩니다.</p>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Copyright Transfer / 저작권 완전 양도 옵션</label>
+                    <div class="grid grid-cols-1 gap-2" id="v-copyright-options-container">
+                        </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Non-Disclosure Options / 포트폴리오 비공개 여부</label>
+                    <div class="grid grid-cols-1 gap-2" id="v-disclosure-container">
+                        <label class="relative flex items-center justify-between p-3 rounded-xl border border-cyan-400 bg-cyan-50/20 cursor-pointer select-none hover:bg-slate-50 transition-all">
+                            <input type="radio" name="disclosure_opt" value="open" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleDisclosureChange(this)">
+                            <span class="text-xs font-semibold text-slate-900">공개 가능 (포트폴리오 업로드 동의)</span>
+                            <span class="text-xs text-cyan-600 font-bold">₩0 / $0</span>
+                        </label>
+                        <label class="relative flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
+                            <input type="radio" name="disclosure_opt" value="month" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleDisclosureChange(this)">
+                            <span class="text-xs font-semibold text-slate-900">완성일로부터 1달 이상 비공개</span>
+                            <span class="text-xs text-slate-500 font-bold">₩20,000 / $15</span>
+                        </label>
+                        <label class="relative flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all">
+                            <input type="radio" name="disclosure_opt" value="forever" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleDisclosureChange(this)">
+                            <span class="text-xs font-semibold text-slate-900">포트폴리오 영구 비공개 권한 설정</span>
+                            <span class="text-xs text-slate-500 font-bold">₩1,000,000 / $715</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Base Options / 기본 옵션
-                </label>
-                <div class="grid grid-cols-3 gap-2" id="base-options">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Character Reference / 캐릭터 외관 설정</label>
+                <textarea id="char-desc" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white h-28 resize-y transition-all" placeholder="성별, 의상, 분위기 등을 최대한 상세히 적어주세요."></textarea>
+                <div class="mt-2">
+                    <label class="text-[11px] font-semibold text-slate-400 block mb-1">참조 이미지 첨부 (선택)</label>
+                    <input type="file" id="char-image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer">
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Base Options / 기본 옵션</label>
+                
+                <div class="grid grid-cols-3 gap-2" id="base-options-illust">
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="두상" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
-                        <span class="text-xs font-semibold text-slate-900">Bust-up</span>
+                        <span class="text-xs font-semibold text-slate-900">Bust-up (두상)</span>
                         <span class="text-[9px] text-slate-500 mt-1" id="desc-두상">$30 / ₩40,000</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="반신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
-                        <span class="text-xs font-semibold text-slate-900">Half-body</span>
+                        <span class="text-xs font-semibold text-slate-900">Half-body (반신)</span>
                         <span class="text-[9px] text-slate-500 mt-1" id="desc-반신">$60 / ₩80,000</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="base_opt" value="전신" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
-                        <span class="text-xs font-semibold text-slate-900">Full-body</span>
+                        <span class="text-xs font-semibold text-slate-900">Full-body (전신)</span>
                         <span class="text-[9px] text-slate-500 mt-1" id="desc-전신">$80 / ₩110,000</span>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 gap-2 hidden" id="base-options-virtual">
+                    <label class="relative flex flex-col items-start justify-center p-4 rounded-xl border border-cyan-400 bg-cyan-50/10 cursor-pointer select-none hover:bg-slate-50 transition-all">
+                        <input type="radio" name="base_opt" value="버츄얼" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBaseChange(this)">
+                        <span class="text-sm font-bold text-slate-900">Full Body 전신 모델 일러스트</span>
+                        <span class="text-xs text-slate-500 mt-1 leading-relaxed">Art only, rigging is NOT included. PSD file with standard layer separation for Live2D rigging. 파츠 분리가 완료된 PSD 원본 파일 납품 (리깅 미포함).</span>
+                        <span class="text-xs text-cyan-600 font-bold mt-2" id="desc-버츄얼">$550~ / ₩700,000~</span>
                     </label>
                 </div>
             </div>
 
+            <div id="virtual-only-expressions" class="flex flex-col gap-1.5 hidden">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Expressions / 기본 제공 외 표정 옵션 설정</label>
+                <div class="bg-slate-50 p-4 border border-slate-200 rounded-xl space-y-3">
+                    <span class="text-[11px] text-cyan-600 font-bold block">3개 무료 제공 (4개째부터 표정추가 비용 개당 ₩20,000 / $15씩 연산 자동 적용)</span>
+                    <div class="grid grid-cols-4 gap-2 text-center" id="v-exp-checkboxes">
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="정색" class="hidden" onchange="handleExpressionCheck(this)">
+                            정색
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="반짝" class="hidden" onchange="handleExpressionCheck(this)">
+                            반짝
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="하트" class="hidden" onchange="handleExpressionCheck(this)">
+                            하트
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="눈물" class="hidden" onchange="handleExpressionCheck(this)">
+                            눈물
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="죽은 눈" class="hidden" onchange="handleExpressionCheck(this)">
+                            죽은 눈
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="홍조" class="hidden" onchange="handleExpressionCheck(this)">
+                            홍조
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="볼빵빵" class="hidden" onchange="handleExpressionCheck(this)">
+                            볼빵빵
+                        </label>
+                        <label class="flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none">
+                            <input type="checkbox" name="v_expression" value="헤롱" class="hidden" onchange="handleExpressionCheck(this)">
+                            헤롱
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between border-t border-slate-200 pt-2 text-xs">
+                        <span class="text-slate-600 font-semibold font-sans">그 외 추가 표정 직접 의뢰 (개수):</span>
+                        <input type="number" id="v-exp-custom-qty" value="0" min="0" max="20" class="w-16 rounded-lg border border-slate-200 p-1 text-center font-bold outline-none focus:border-cyan-400" onchange="calculate()">
+                    </div>
+                </div>
+            </div>
+
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Add-ons & Extra Fees / 추가 옵션
-                </label>
-                <div class="space-y-2">
-                    <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Add-ons & Extra Fees / 추가 옵션</label>
+                
+                <div class="space-y-2" id="addons-illust">
+                    <div id="wrapper-opt-person" class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
                         <div class="flex items-center justify-between">
                             <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
-                                <input type="checkbox" id="opt-person" data-name="인물 추가" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                <input type="checkbox" id="opt-person" data-name="인물 추가" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-400" onchange="handleCheckboxChange(this)">
                                 Extra Character / 인물 추가
                             </label>
                             <span id="text-person" class="text-[10px] text-slate-400 shrink-0">기본금의 80% 추가</span>
                         </div>
                         <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
-                            <span class="text-[11px] text-slate-500">수량:</span>
-                            <input type="number" id="qty-person" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                            <span class="text-[11px] text-slate-500 font-sans">수량:</span>
+                            <input type="number" id="qty-person" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-cyan-400" onchange="calculate()">
                         </div>
                     </div>
 
                     <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
                         <div class="flex items-center justify-between">
                             <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
-                                <input type="checkbox" id="opt-bg" data-name="배경 추가" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
+                                <input type="checkbox" id="opt-bg" data-name="배경 추가" value="5,10000" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-400" onchange="handleCheckboxChange(this)">
                                 Background / 배경 추가
                             </label>
                             <span class="text-[10px] text-slate-400 shrink-0">+$5 / ₩10,000</span>
                         </div>
                         <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
-                            <span class="text-[11px] text-slate-500">수량:</span>
-                            <input type="number" id="qty-bg" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                            <span class="text-[11px] text-slate-500 font-sans">수량:</span>
+                            <input type="number" id="qty-bg" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-cyan-400" onchange="calculate()">
                         </div>
                     </div>
 
                     <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
                         <div class="flex items-center justify-between">
                             <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
-                                <input type="checkbox" id="opt-prop" data-name="단순 소품 및 디자인" value="10,15000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                                Simple props & Design / 단순 소품 및 디자인
+                                <input type="checkbox" id="opt-prop" data-name="단순 소품 및 디자인" value="10,15000" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-400" onchange="handleCheckboxChange(this)">
+                                Simple props / 소품 및 디자인
                             </label>
                             <span class="text-[10px] text-slate-400 shrink-0">+$10 / ₩15,000</span>
                         </div>
                         <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
-                            <span class="text-[11px] text-slate-500">수량:</span>
-                            <input type="number" id="qty-prop" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                            <span class="text-[11px] text-slate-500 font-sans">수량:</span>
+                            <input type="number" id="qty-prop" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-cyan-400" onchange="calculate()">
                         </div>
                     </div>
 
                     <div class="flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container">
                         <div class="flex items-center justify-between">
                             <label class="text-xs font-medium text-slate-700 flex items-center gap-2 cursor-pointer select-none w-full py-1">
-                                <input type="checkbox" id="opt-detail" data-name="고디테일 요소" value="5,10000" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="handleCheckboxChange(this)">
-                                Highly detailed elements / 고디테일 요소
+                                <input type="checkbox" id="opt-detail" data-name="고디테일 요소" value="5,10000" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-400" onchange="handleCheckboxChange(this)">
+                                Highly detailed / 고디테일 요소
                             </label>
                             <span class="text-[10px] text-slate-400 shrink-0">+$5 / ₩10,000</span>
                         </div>
                         <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-end gap-2 hidden qty-wrapper">
-                            <span class="text-[11px] text-slate-500">수량:</span>
-                            <input type="number" id="qty-detail" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-indigo-500" onchange="calculate()">
+                            <span class="text-[11px] text-slate-500 font-sans">수량:</span>
+                            <input type="number" id="qty-detail" value="1" min="1" max="10" class="w-14 rounded-lg border border-slate-200 p-1 text-center text-xs outline-none focus:border-cyan-400" onchange="calculate()">
                         </div>
                     </div>
+                </div>
+
+                <div class="space-y-2 hidden" id="addons-virtual">
+                    <p class="text-[10px] text-slate-400 font-medium pb-1">※ 의상 · 헤어는 먼저 문의 후 선택해 주세요</p>
+                    <div class="grid grid-cols-1 gap-2">
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="72,100000,온오프 장식" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                온오프 장식 등
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩100,000 / $72</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="72,100000,긴헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                엉덩이 밑까지 오는 긴헤어
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩100,000 / $72</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="36,50000,복잡헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                헤어 (복잡한 변형)
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩50,000 / $36</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="250,350000,전체변형헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                신헤어 (전체 변형)
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩350,000 / $250</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="142,200000,뒷머리변형헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                신헤어 (뒷머리 변형)
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩200,000 / $142</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="36,50000,동물귀꼬리,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                동물귀, 꼬리, 유사 파츠
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩50,000~ / $36~</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="36,50000,소품,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                단순 소품 및 장식
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩50,000~ / $36~</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="250,350000,신의상,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                신의상 제작
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩350,000~ / $250~</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="58,80000,손포즈" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                추가 손포즈 파츠 분리
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩80,000 / $58</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="108,150000,추가오브젝트,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                오브젝트 & 추가팔 파츠 설계
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩150,000~ / $108~</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="36,50000,추가시안" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                추가 설정 시안
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩50,000 / $36</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="142,200000,삼면도" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                설정 삼면도 단색화
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩200,000 / $142</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="108,150000,비대칭포즈" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                비대칭 기본 대기 포즈
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩150,000 / $108</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="11,15000,실시간컨펌" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                디스코드 실시간 1:1 컨펌 조율
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩15,000 / $11</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="285,400000,핸드트래킹" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                완벽 핸드트래킹용 파츠 추가 세분화
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩400,000 / $285</span>
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
+                            <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
+                                <input type="checkbox" name="v_addon" value="215,300000,맨몸풀채색" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
+                                맨몸 풀 채색 소스 동시 동봉
+                            </span>
+                            <span class="text-xs text-slate-400 font-sans font-medium">₩300,000 / $215</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex flex-col p-3.5 rounded-xl border border-slate-200 bg-slate-50 transition-all">
+                    <label class="text-xs font-bold text-slate-500 mb-1">그 외 기타 추가옵션 (수식 제외 / 추후 협의)</label>
+                    <input type="text" id="opt-custom-describe" class="w-full rounded-lg border border-slate-200 p-2 text-xs outline-none bg-white focus:border-cyan-400" placeholder="상담이 필요한 개별 희망 추가 사항 적기">
                 </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Rush Fee / 빠른 마감 여부
-                </label>
-                <div class="grid grid-cols-3 gap-2" id="rush-group">
-                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-indigo-600">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Rush Fee / 빠른 마감 여부</label>
+                
+                <div class="grid grid-cols-3 gap-2" id="rush-group-illust">
+                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-cyan-400">
                         <input type="radio" name="rush" value="0" data-name="일반 마감" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
                         <span class="text-xs font-semibold text-slate-900">Normal</span>
-                        <span class="text-[9px] text-slate-400 mt-1">일반마감 (최대 4주)</span>
+                        <span class="text-[9px] text-slate-400 mt-1">일반마감 (~4주)</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="rush" value="0.3" data-name="2주 마감" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
                         <span class="text-xs font-semibold text-slate-900">2 Weeks</span>
-                        <span class="text-[9px] text-indigo-600 mt-1">+30%</span>
+                        <span class="text-[9px] text-cyan-600 mt-1">+30%</span>
                     </label>
                     <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                         <input type="radio" name="rush" value="0.5" data-name="1주 마감" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
                         <span class="text-xs font-semibold text-slate-900">1 Week</span>
-                        <span class="text-[9px] text-indigo-600 mt-1">+50%</span>
+                        <span class="text-[9px] text-cyan-600 mt-1">+50%</span>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 hidden" id="rush-group-virtual">
+                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-cyan-400">
+                        <input type="radio" name="rush_v" value="0" data-name="일반 마감" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
+                        <span class="text-xs font-semibold text-slate-900">Normal</span>
+                        <span class="text-[9px] text-slate-400 mt-1">일반마감 (최소 4주 이상)</span>
+                    </label>
+                    <label class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
+                        <input type="radio" name="rush_v" value="0.5" data-name="2주 마감" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRushChange(this)">
+                        <span class="text-xs font-semibold text-slate-900">2 Weeks Rush</span>
+                        <span class="text-[9px] text-pink-500 mt-1">+50%</span>
                     </label>
                 </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(Optional / 선택)</span>
-                </label>
-                <input type="date" id="deadline" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white transition-all">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Deadline / 희망 마감일 <span class="text-[10px] font-normal text-slate-400">(선택)</span></label>
+                <input type="date" id="deadline" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white transition-all">
             </div>
 
             <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Other Requests / 기타 문의내용
-                </label>
-                <textarea id="other-requests" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-indigo-500 focus:bg-white h-24 resize-y transition-all" placeholder="구도나 참고사항 등을 적어주세요."></textarea>
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Other Requests / 기타 문의내용</label>
+                <textarea id="other-requests" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-cyan-400 focus:bg-white h-24 resize-y transition-all" placeholder="기타 연출 구도나 참고사항을 적어주세요."></textarea>
             </div>
 
-            <div class="rounded-2xl bg-slate-900 p-5 flex justify-between items-center text-white">
-                <div>
-                    <span class="text-[10px] font-bold tracking-widest text-indigo-400 block uppercase">Estimated Cost</span>
-                    <span class="text-xs text-slate-400">예상 총 견적액</span>
+            <div class="rounded-2xl bg-slate-900 p-5 space-y-2">
+                <div class="flex justify-between items-center text-white">
+                    <div>
+                        <span class="text-[10px] font-bold tracking-widest text-cyan-400 block uppercase">Estimated Cost</span>
+                        <span class="text-xs text-slate-400">예상 총 견적액</span>
+                    </div>
+                    <div class="text-xl font-extrabold text-right text-pink-300 font-sans" id="total-price">$0 / ₩0</div>
                 </div>
-                <div class="text-xl font-extrabold text-right text-indigo-200" id="total-price">$0 / ₩0</div>
+                <div id="price-variation-notice" class="text-[11px] text-amber-400 pt-1 leading-relaxed border-t border-slate-800 hidden">
+                    * 동물귀/꼬리, 소품, 의상 등 가변형 항목(~) 선택에 따라 최종 상담 시 가격 세부 조율 및 변동이 일어날 수 있습니다.
+                </div>
             </div>
 
             <div id="status-box" class="p-4 rounded-xl text-sm font-medium border hidden transition-all"></div>
 
-            <button id="submit-button" class="w-full rounded-xl bg-indigo-600 p-4 text-sm font-bold text-white shadow-md hover:bg-indigo-500 active:scale-95 transition-all flex items-center justify-center gap-2" onclick="sendToDiscord()">
+            <button id="submit-button" class="w-full rounded-xl bg-gradient-to-r from-teal-400 to-pink-400 p-4 text-sm font-bold text-white shadow-md hover:from-teal-500 hover:to-pink-500 active:scale-95 transition-all flex items-center justify-center gap-2" onclick="sendToDiscord()">
                 신청서 전송하기 (Submit Order)
             </button>
         </div>
     </div>
+</div>
 
+<div class="mx-auto max-w-6xl mt-6">
     <div id="secret-admin-panel" class="rounded-2xl border-2 border-dashed border-indigo-300 bg-indigo-50/40 p-6 hidden space-y-5">
         <div class="flex justify-between items-center border-b border-indigo-100 pb-3">
             <div>
-                <h2 class="text-base font-bold text-indigo-900">🔒 작가 전용 비밀 관리 패널</h2>
-                <p class="text-xs text-indigo-500 font-medium">마우스로 슬롯 버튼을 클릭하거나 공지 텍스트를 고쳐보세요.</p>
+                <h2 class="text-base font-bold text-indigo-900">작가 전용 비밀 관리 패널</h2>
+                <p class="text-xs text-indigo-500 font-medium">슬롯 버튼을 클릭하거나 공지사항을 고친 후 저장해 주세요.</p>
             </div>
             <button onclick="logoutAdmin()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-xl font-semibold text-slate-700 transition-all">관리창 닫기</button>
         </div>
-
         <div>
-            <label class="text-xs font-bold text-indigo-900 block mb-2">📅 마우스 클릭 슬롯 변경 (OPEN ↔ CLOSED 토글)</label>
-            <div class="grid grid-cols-4 gap-2" id="admin-slots-control">
-                </div>
+            <label class="text-xs font-bold text-indigo-900 block mb-2">마우스 클릭 슬롯 변경 (OPEN ↔ CLOSED)</label>
+            <div class="grid grid-cols-4 gap-2" id="admin-slots-control"></div>
         </div>
-
         <div class="flex flex-col gap-2">
-            <label class="text-xs font-bold text-indigo-900 block">📜 공지사항 & 약관 메모장 편집</label>
+            <label class="text-xs font-bold text-indigo-900 block">공지사항 & 약관 메모장 편집</label>
             <textarea id="admin-notice-input" class="w-full h-32 rounded-xl border border-indigo-200 p-3 text-xs outline-none focus:border-indigo-500 bg-white leading-relaxed resize-y font-sans"></textarea>
             <button onclick="saveNotice()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs p-3 rounded-xl transition-all shadow-sm">공지사항 즉시 저장 및 동기화</button>
         </div>
     </div>
-
 </div>
 
 <script>
+    // 지정해주신 디스코드 채널 웹훅 주소(CORS 우회 지원)
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515834246210519052/QPxttyyPB9sVui8ZJ4z1HuhogjrJVBtW13CP0NeygrkNhLR4CDgttOoaJAj4-0YJQ_Li";
-    
-    // 비밀번호 설정 (작가님이 원하시는 네자리 숫자 등으로 자유롭게 변경 가능합니다)
+    // 1:1 문의 전용 디스코드 채널 웹훅 주소
+    const INQUIRY_WEBHOOK_URL = "https://discord.com/api/webhooks/1516194134354952204/NzsP-gVwvYWSCAsIx3CbCfn-vLZXpfM5yq9jj88FIRepdasoeFSJMie1ztFHOPZwCsnA";
     const ADMIN_PASSWORD = "0000";
 
     let currentSlots = {};
     let currentNotice = "";
+    let activeTab = "illust"; 
+
+    // 저작권 양도 요약 데이터 (단순화: 11.docx 기반, 쉼표 없는 안전한 순수 정수 리터럴)
+    const copyrightData = {
+        individual: [
+            { text: "개인세 저작권 영구 양도", usd: 355, krw: 500000, key: "indiv_transfer" },
+            { text: "미양도 (소장/방송 사용권만 획득)", usd: 0, krw: 0, key: "no_purchase" }
+        ],
+        corporate: [
+            { text: "기업세 저작권 영구 양도", usd: 715, krw: 1000000, key: "corp_transfer" },
+            { text: "미양도 (소장/방송 사용권만 획득)", usd: 0, krw: 0, key: "no_purchase" }
+        ]
+    };
 
     document.addEventListener("DOMContentLoaded", () => {
         initData();
         checkAdminAccess();
-        calculate();
+        switchFormTab('illust'); // 기본 그림탭 렌더링
+        renderCopyrightOptions('individual'); // 개인세 기본 세팅
     });
 
-    // 로컬스토리지 데이터를 가져오거나 초기값 주입하는 세팅
+    // 아코디언 토글 제어 스크립트
+    function toggleAccordion(id) {
+        const accordion = document.getElementById(id);
+        const arrow = document.getElementById('arrow-' + id);
+        
+        if (accordion.style.maxHeight && accordion.style.maxHeight !== '0px') {
+            accordion.style.maxHeight = '0px';
+            arrow.classList.remove('rotate-180');
+        } else {
+            // 다른 아코디언 닫기
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                if(item.id !== id) {
+                    item.style.maxHeight = '0px';
+                    const otherArrow = document.getElementById('arrow-' + item.id);
+                    if(otherArrow) otherArrow.classList.remove('rotate-180');
+                }
+            });
+            accordion.style.maxHeight = accordion.scrollHeight + "px";
+            arrow.classList.add('rotate-180');
+        }
+    }
+
+    function switchFormTab(tab) {
+        activeTab = tab;
+        
+        const btnIllust = document.getElementById('tab-illust');
+        const btnVirtual = document.getElementById('tab-virtual');
+        const boxIllust = document.getElementById('base-options-illust');
+        const boxVirtual = document.getElementById('base-options-virtual');
+        
+        const wrapPurpose = document.getElementById('wrapper-purpose-field');
+        const wrapProfile = document.getElementById('virtual-only-profile');
+        const wrapRights = document.getElementById('virtual-only-rights');
+        const wrapExp = document.getElementById('virtual-only-expressions');
+        
+        const illustAddons = document.getElementById('addons-illust');
+        const virtualAddons = document.getElementById('addons-virtual');
+        
+        const rushIllust = document.getElementById('rush-group-illust');
+        const rushVirtual = document.getElementById('rush-group-virtual');
+
+        // 라디오 버튼 선택 초기화
+        document.querySelectorAll('input[name="base_opt"]').forEach(radio => radio.checked = false);
+        document.querySelectorAll('#base-options-illust label, #base-options-virtual label').forEach(lbl => {
+            lbl.classList.remove('selected', 'ring-2', 'ring-cyan-400');
+        });
+
+        if (tab === 'illust') {
+            btnIllust.className = "py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-sm relative z-10";
+            btnVirtual.className = "py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900 relative z-10";
+            
+            boxIllust.classList.remove('hidden');
+            boxVirtual.classList.add('hidden');
+            wrapPurpose.classList.remove('hidden');
+            
+            wrapProfile.classList.add('hidden');
+            wrapRights.classList.add('hidden');
+            wrapExp.classList.add('hidden');
+            
+            illustAddons.classList.remove('hidden');
+            virtualAddons.classList.add('hidden');
+            
+            rushIllust.classList.remove('hidden');
+            rushVirtual.classList.add('hidden');
+        } else {
+            btnVirtual.className = "py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-sm relative z-10";
+            btnIllust.className = "py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900 relative z-10";
+            
+            boxIllust.classList.add('hidden');
+            boxVirtual.classList.remove('hidden');
+            wrapPurpose.classList.add('hidden');
+            
+            wrapProfile.classList.remove('hidden');
+            wrapRights.classList.remove('hidden');
+            wrapExp.classList.remove('hidden');
+            
+            illustAddons.classList.add('hidden');
+            virtualAddons.classList.remove('hidden');
+            
+            rushIllust.classList.add('hidden');
+            rushVirtual.classList.remove('hidden');
+            
+            // 버츄얼 탭 전용 강제 디폴트 체크바인딩
+            const vBaseRadio = document.querySelector('input[name="base_opt"][value="버츄얼"]');
+            if (vBaseRadio) {
+                vBaseRadio.checked = true;
+                vBaseRadio.closest('label').classList.add('selected', 'ring-2', 'ring-cyan-400');
+            }
+        }
+        calculate();
+    }
+
+    // [버츄얼 전용] 저작권 양도 구매 옵션 동적 렌더러 함수
+    function renderCopyrightOptions(agencyType) {
+        const container = document.getElementById("v-copyright-options-container");
+        container.innerHTML = "";
+        
+        const options = copyrightData[agencyType];
+        options.forEach((opt, idx) => {
+            const isFirst = idx === options.length - 1; // 미양도 디폴트 지정
+            const label = document.createElement("label");
+            label.className = `relative flex items-center justify-between p-3 rounded-xl border cursor-pointer select-none hover:bg-slate-50 transition-all ${isFirst ? 'selected ring-2 ring-cyan-400 bg-cyan-50/10' : 'border-slate-200 bg-white'}`;
+            label.innerHTML = `
+                <input type="radio" name="v_copyright" value="${opt.usd},${opt.krw},${opt.text}" ${isFirst ? 'checked' : ''} class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleCopyrightRadioChange(this)">
+                <span class="text-xs font-semibold text-slate-900">${opt.text}</span>
+                <span class="text-xs ${isFirst ? 'text-slate-500' : 'text-cyan-600'} font-bold font-sans">₩${opt.krw.toLocaleString()} / $${opt.usd}</span>
+            `;
+            container.appendChild(label);
+        });
+        calculate();
+    }
+
+    function handleAgencyChange(input) {
+        document.querySelectorAll('#agency-group label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400');
+        });
+        if (input.checked) { 
+            input.closest('label').classList.add('selected', 'ring-2', 'ring-cyan-400'); 
+            renderCopyrightOptions(input.value);
+        }
+    }
+
+    function handleCopyrightRadioChange(input) {
+        document.querySelectorAll('#v-copyright-options-container label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400', 'bg-cyan-50/10');
+            label.classList.add('border-slate-200', 'bg-white');
+        });
+        if (input.checked) {
+            const label = input.closest('label');
+            label.classList.add('selected', 'ring-2', 'ring-cyan-400', 'bg-cyan-50/10');
+            label.classList.remove('border-slate-200', 'bg-white');
+        }
+        calculate();
+    }
+
+    function handleDisclosureChange(input) {
+        document.querySelectorAll('#v-disclosure-container label').forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400', 'bg-cyan-50/10');
+            label.classList.add('border-slate-200', 'bg-white');
+        });
+        if (input.checked) {
+            const label = input.closest('label');
+            label.classList.add('selected', 'ring-2', 'ring-cyan-400', 'bg-cyan-50/10');
+            label.classList.remove('border-slate-200', 'bg-white');
+        }
+        calculate();
+    }
+
+    // 버츄얼 전용 표정옵션 커스텀 체크박스 활성 시각 렌더러
+    function handleExpressionCheck(input) {
+        const label = input.closest('label');
+        if (input.checked) {
+            label.classList.remove('border-slate-200', 'bg-white');
+            label.classList.add('border-cyan-400', 'bg-cyan-50/10', 'text-cyan-900');
+        } else {
+            label.classList.add('border-slate-200', 'bg-white');
+            label.classList.remove('border-cyan-400', 'bg-cyan-50/10', 'text-cyan-900');
+        }
+        calculate();
+    }
+
     function initData() {
         const savedSlots = localStorage.getItem("commission_slots");
-        if (savedSlots) {
-            currentSlots = JSON.parse(savedSlots);
-        } else {
+        if (savedSlots) { currentSlots = JSON.parse(savedSlots); } 
+        else {
             currentSlots = {...defaultSlots};
             localStorage.setItem("commission_slots", JSON.stringify(currentSlots));
         }
 
         const savedNotice = localStorage.getItem("commission_notice");
-        if (savedNotice !== null) {
-            currentNotice = savedNotice;
-        } else {
-            currentNotice = defaultNotice;
+        if (savedNotice !== null) { currentNotice = savedNotice; } 
+        else {
+            currentNotice = `커미션 신청 전 약관을 주의 깊게 읽어주세요. 의뢰를 신청하시면 아래의 모든 약관에 동의한 것으로 간주됩니다.\n\n[ COPYRIGHT & USAGE 저작권 및 사용 범위 ]\n• I retain all copyrights to the artwork. I reserve the right to post the artwork on my social media/portfolio. 모든 저작권은 작가에게 있습니다. 완성작은 작가의 SNS나 포트폴리오에 공개될 수 있습니다.\n• An extra fee will be charged for keeping the artwork private, depending on the scale of the project. Please discuss this with me in advance. 비공개를 원하실 경우 유동적인 추가금이 발생합니다, 사전에 문의해 주세요.\n• Artworks are for personal use only. No commercial use, tracing, or reselling. 개인 소장용 작업물의 상업적 이용, 트레이싱, 재판매를 금지합니다.\n• Streamers, VTubers, and Youtubers must order under the [Commercial / Streaming] type. 방송, 버튜버, 유튜브용 의뢰는 반드시 방송용/상업용 타입으로 신청해야 합니다.\n\n[ WORK PROCESS & REVISIONS 작업 과정 및 수정 ]\n• PROCESS: Sketch ➔ Lineart & Flat Color ➔ Final Delivery 과정: 러프 ➔ 선화/밑색 ➔ 최종 완성\n• REVISIONS: Up to [2] free revisions are allowed only up to during the lineart stage. 수정 및 변형: 선화 단계까지만 최대 2회 무료 수정 가능합니다.\n• Major changes after the lineart stage or after completion will require an extra fee. 선화 단계 이후나 완성 후의 큰 수정은 별도의 추가금이 청구됩니다.\n\n[ DEADLINE 작업 기한 ]\n• The estimated turnaround time is [4 weeks] after payment. 예상 작업 기간은 결제 후 4주입니다.\n• For rushed orders, a rush fee will apply. Please check the extra fees on the price list and discuss it with me beforehand. 빠른 마감은 추가금이 붙으니 가격표의 추가금 항목 확인 후 사전에 문의해 주세요.\n\n[ PAYMENT & REFUNDS 결제 및 환불 ]\n• All payments must be made in full upfront via [PayPal]. 모든 결제는 페이팔을 통한 선불 완납 방식으로 진행됩니다.\n• 100% refund if cancelled before I start working. 작업 시작 전 취소 시 100% 환불\n• 50% refund during the sketch stage. 러프 단계 진행 중 취소 시 50% 환불\n• NO REFUNDS after the sketch has been approved. 러프가 승인된 이후에는 환불이 불가능합니다.\n• Prices may vary depending on the complexity of the character or background. 캐릭터의 복잡도나 배경유무에 따라 가격이 변동될 수 있습니다.`;
             localStorage.setItem("commission_notice", currentNotice);
         }
-
         renderLiveDisplays();
     }
 
-    // 신청자 화면과 연동되는 메인 현황판 그리기
     function renderLiveDisplays() {
         const displayContainer = document.getElementById("live-slots-display");
         displayContainer.innerHTML = "";
-        
         const months = ["Jan. 1월", "Feb. 2월", "Mar. 3월", "Apr. 4월", "May. 5월", "Jun. 6월", "Jul. 7월", "Aug. 8월", "Sep. 9월", "Oct. 10월", "Nov. 11월", "Dec. 12월"];
         
         for (let i = 1; i <= 12; i++) {
             const isOpen = currentSlots[i];
             const div = document.createElement("div");
-            div.className = `p-3 rounded-xl border transition-all text-left flex flex-col justify-between ${isOpen ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-slate-100 border-slate-200 text-slate-400'}`;
-            
+            div.className = `p-3 rounded-xl border transition-all text-left flex flex-col justify-between ${isOpen ? 'bg-cyan-50 border-cyan-200 text-cyan-900' : 'bg-slate-100 border-slate-200 text-slate-400'}`;
             div.innerHTML = `
                 <span class="text-xs font-bold block">${months[i-1]}</span>
-                <span class="text-[9px] font-extrabold tracking-wider uppercase mt-1 px-1.5 py-0.5 rounded-md inline-block w-max ${isOpen ? 'bg-sky-200 text-sky-800' : 'bg-slate-200 text-slate-500'}">
+                <span class="text-[9px] font-extrabold tracking-wider uppercase mt-1 px-1.5 py-0.5 rounded-md inline-block w-max ${isOpen ? 'bg-cyan-200 text-cyan-800' : 'bg-slate-200 text-slate-500'}">
                     ${isOpen ? 'OPEN' : 'CLOSED'}
                 </span>
             `;
             displayContainer.appendChild(div);
         }
-
         document.getElementById("live-notice-display").innerText = currentNotice;
     }
 
-    // 주소창에 ?mode=admin 검사하여 관리자창 제어하기
     function checkAdminAccess() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('mode') === 'admin') {
-            const pass = prompt("🔒 관리자 인증 계정\n비밀번호를 입력하세요:");
+            const pass = prompt("관리자 패널\n비밀번호를 입력하세요:");
             if (pass === ADMIN_PASSWORD) {
-                alert("🔓 인증 성공! 페이지 맨 아래에 관리자 패널이 잠금해제 되었습니다.");
+                alert("인증 완료되었습니다. 수정 데이터가 실시간으로 보존됩니다.");
                 document.getElementById("secret-admin-panel").classList.remove("hidden");
                 renderAdminControls();
             } else {
-                alert("❌ 비밀번호가 올바르지 않습니다. 일반 모드로 표시합니다.");
+                alert("비밀번호가 올바르지 않습니다.");
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
     }
 
-    // 관리자 전용 제어 도구 렌더링하기
     function renderAdminControls() {
         const controlContainer = document.getElementById("admin-slots-control");
         controlContainer.innerHTML = "";
-
         for (let i = 1; i <= 12; i++) {
             const isOpen = currentSlots[i];
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = `p-2 rounded-xl border text-xs font-bold transition-all ${isOpen ? 'bg-sky-600 border-sky-600 text-white shadow-sm' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}`;
+            btn.className = `p-2 rounded-xl border text-xs font-bold transition-all ${isOpen ? 'bg-cyan-600 border-cyan-600 text-white shadow-sm' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'}`;
             btn.innerText = `${i}월: ${isOpen ? 'OPEN' : 'CLOSED'}`;
-            
             btn.onclick = () => {
                 currentSlots[i] = !currentSlots[i];
                 localStorage.setItem("commission_slots", JSON.stringify(currentSlots));
@@ -380,17 +988,14 @@
             };
             controlContainer.appendChild(btn);
         }
-
         document.getElementById("admin-notice-input").value = currentNotice;
     }
 
-    // 메모장 글귀 보관하기
     function saveNotice() {
-        const text = document.getElementById("admin-notice-input").value;
-        currentNotice = text;
+        currentNotice = document.getElementById("admin-notice-input").value;
         localStorage.setItem("commission_notice", currentNotice);
         renderLiveDisplays();
-        alert("📜 공지사항 수정사항이 정상 반영되었습니다!");
+        alert("공지사항 데이터가 동기화되었습니다.");
     }
 
     function logoutAdmin() {
@@ -398,46 +1003,40 @@
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    // --- 이하 기존 신청 폼 연산 및 전송 로직 유지 ---
     function handlePurposeChange(input) {
         document.querySelectorAll('#purpose-group label').forEach(label => {
-            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400');
         });
-        if (input.checked) {
-            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
-        }
+        if (input.checked) { input.closest('label').classList.add('selected', 'ring-2', 'ring-cyan-400'); }
         updatePrices();
     }
 
     function handleBaseChange(input) {
-        document.querySelectorAll('#base-options label').forEach(label => {
-            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        const targetContainer = activeTab === 'illust' ? '#base-options-illust' : '#base-options-virtual';
+        document.querySelectorAll(`${targetContainer} label`).forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400');
         });
-        if (input.checked) {
-            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
-        }
+        if (input.checked) { input.closest('label').classList.add('selected', 'ring-2', 'ring-cyan-400'); }
         calculate();
     }
 
     function handleRushChange(input) {
-        document.querySelectorAll('#rush-group label').forEach(label => {
-            label.classList.remove('selected', 'ring-2', 'ring-indigo-600');
+        const targetContainer = activeTab === 'illust' ? '#rush-group-illust' : '#rush-group-virtual';
+        document.querySelectorAll(`${targetContainer} label`).forEach(label => {
+            label.classList.remove('selected', 'ring-2', 'ring-cyan-400');
         });
-        if (input.checked) {
-            input.closest('label').classList.add('selected', 'ring-2', 'ring-indigo-600');
-        }
+        if (input.checked) { input.closest('label').classList.add('selected', 'ring-2', 'ring-cyan-400'); }
         calculate();
     }
 
     function handleCheckboxChange(input) {
         const container = input.closest('.option-container');
         const qtyWrapper = container.querySelector('.qty-wrapper');
-        
         if (input.checked) {
-            container.classList.add('bg-indigo-50/50', 'border-indigo-300');
+            container.classList.add('bg-cyan-50/50', 'border-cyan-300');
             if(qtyWrapper) qtyWrapper.classList.remove('hidden');
         } else {
-            container.classList.remove('bg-indigo-50/50', 'border-indigo-300');
+            container.classList.remove('bg-cyan-50/50', 'border-cyan-300');
             if(qtyWrapper) qtyWrapper.classList.add('hidden');
             const qtyInput = container.querySelector('input[type="number"]');
             if(qtyInput) qtyInput.value = 1;
@@ -448,7 +1047,6 @@
     function updatePrices() {
         const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
         const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
-        
         document.getElementById('desc-두상').innerText = `$${30 * factor} / ₩${(40000 * factor).toLocaleString()}`;
         document.getElementById('desc-반신').innerText = `$${60 * factor} / ₩${(80000 * factor).toLocaleString()}`;
         document.getElementById('desc-전신').innerText = `$${80 * factor} / ₩${(110000 * factor).toLocaleString()}`;
@@ -459,166 +1057,342 @@
         const checkedBase = document.querySelector('input[name="base_opt"]:checked');
         if (!checkedBase) {
             document.getElementById('total-price').innerText = "$0 / ₩0";
-            return {usd: 0, krw: 0};
+            return {usd: 0, krw: 0, hasVariable: false};
         }
 
         const baseName = checkedBase.value;
         const checkedPurpose = document.querySelector('input[name="purpose"]:checked');
-        const factor = checkedPurpose ? parseInt(checkedPurpose.value) : 1;
-        const checkedRush = document.querySelector('input[name="rush"]:checked');
-        const rush = checkedRush ? parseFloat(checkedRush.value) : 0;
+        
+        let factor = 1;
+        if (activeTab === 'illust' && checkedPurpose) {
+            factor = parseInt(checkedPurpose.value);
+        }
+        
+        // 빠른 마감 분기 수집
+        let rush = 0;
+        if (activeTab === 'illust') {
+            const checkedRush = document.querySelector('input[name="rush"]:checked');
+            rush = checkedRush ? parseFloat(checkedRush.value) : 0;
+        } else {
+            const checkedRushV = document.querySelector('input[name="rush_v"]:checked');
+            rush = checkedRushV ? parseFloat(checkedRushV.value) : 0;
+        }
         
         let bu = basePrices[baseName].usd * factor;
         let bk = basePrices[baseName].krw * factor;
         let eu = 0; let ek = 0;
+        let isVarAddonChecked = false; // 물결표 추가옵션 선택여부 추적 변수
 
-        if (document.getElementById('opt-person').checked) {
+        // 1. [그림용] 인물 추가 가산 수식
+        if (activeTab === 'illust' && document.getElementById('opt-person').checked) {
             const qty = parseInt(document.getElementById('qty-person').value) || 1;
             eu += Math.round(bu * 0.8) * qty; 
             ek += Math.round(bk * 0.8) * qty;
             document.getElementById('text-person').innerText = `+ $${Math.round(bu * 0.8)} / ₩${Math.round(bk * 0.8).toLocaleString()} (명당)`;
-        } else {
+        } else if (activeTab === 'illust') {
             document.getElementById('text-person').innerText = `기본금의 80% 추가`;
         }
 
-        const optIds = [
-            {id: 'opt-bg', qtyId: 'qty-bg'}, 
-            {id: 'opt-prop', qtyId: 'qty-prop'}, 
-            {id: 'opt-detail', qtyId: 'qty-detail'}
-        ];
+        // 2. [그림용] 배경, 단순소품, 고디테일 가산
+        if (activeTab === 'illust') {
+            const optIds = [
+                {id: 'opt-bg', qtyId: 'qty-bg'}, 
+                {id: 'opt-prop', qtyId: 'qty-prop'}, 
+                {id: 'opt-detail', qtyId: 'qty-detail'}
+            ];
+            optIds.forEach(item => {
+                const cb = document.getElementById(item.id);
+                if (cb && cb.checked) {
+                    const values = cb.value.split(',');
+                    const qty = parseInt(document.getElementById(item.qtyId).value) || 1;
+                    eu += parseInt(values[0]) * qty; 
+                    ek += parseInt(values[1]) * qty;
+                }
+            });
+        }
 
-        optIds.forEach(item => {
-            const cb = document.getElementById(item.id);
-            if (cb && cb.checked) {
-                const values = cb.value.split(',');
-                const qty = parseInt(document.getElementById(item.qtyId).value) || 1;
-                eu += parseInt(values[0]) * qty; 
-                ek += parseInt(values[1]) * qty;
+        // 3. [버츄얼 전용] 표정 연동 계산기 (3개 무료 자동 차감 적용)
+        if (activeTab === 'virtual') {
+            const expCheckboxes = document.querySelectorAll('input[name="v_expression"]:checked');
+            const checkedCount = expCheckboxes.length;
+            const customQtyInput = document.getElementById('v-exp-custom-qty');
+            const customCount = parseInt(customQtyInput.value) || 0;
+            const totalExp = checkedCount + customCount;
+            
+            if (totalExp > 3) {
+                const billableExp = totalExp - 3;
+                eu += billableExp * 15;
+                ek += billableExp * 20000;
             }
-        });
+        }
+
+        // 4. [버츄얼 전용] 저작권 양도 및 비공개 조항 연동 수식 가산
+        if (activeTab === 'virtual') {
+            const activeCopyrightRadio = document.querySelector('input[name="v_copyright"]:checked');
+            if (activeCopyrightRadio) {
+                const parts = activeCopyrightRadio.value.split(',');
+                eu += parseInt(parts[0]);
+                ek += parseInt(parts[1]);
+            }
+            
+            const activeDisclosureRadio = document.querySelector('input[name="v_disclosure_opt"]:checked');
+            if (activeDisclosureRadio) {
+                const val = activeDisclosureRadio.value;
+                if (val === 'month') {
+                    eu += 15; ek += 20000;
+                } else if (val === 'forever') {
+                    eu += 715; ek += 1000000;
+                }
+            }
+        }
+
+        // 5. [버츄얼 전용] 16개 커스텀 추가 옵션 다이나믹 연산 및 가변형 (isVar) 감지
+        if (activeTab === 'virtual') {
+            const vAddonCheckboxes = document.querySelectorAll('input[name="v_addon"]:checked');
+            vAddonCheckboxes.forEach(cb => {
+                const parts = cb.value.split(',');
+                const usdVal = parseInt(parts[0]);
+                const krwVal = parseInt(parts[1]);
+                eu += usdVal;
+                ek += krwVal;
+                
+                // 물결표시 가변형 옵션이 있는 경우 플래그 활성화
+                if (parts.includes('isVar')) {
+                    isVarAddonChecked = true;
+                }
+            });
+        }
 
         let finalUsd = (bu + eu) * (1 + rush);
         let finalKrw = (bk + ek) * (1 + rush);
 
-        document.getElementById('total-price').innerText = `$${Math.round(finalUsd).toLocaleString()} / ₩${Math.round(finalKrw).toLocaleString()}`;
-        return { usd: Math.round(finalUsd), krw: Math.round(finalKrw) };
+        // 가변형 플래그에 따른 UI 경고 배너 및 기호(~) 유동적 제어
+        const varNotice = document.getElementById('price-variation-notice');
+        const varSymbol = isVarAddonChecked ? "~" : "";
+        if (isVarAddonChecked) {
+            varNotice.classList.remove('hidden');
+        } else {
+            varNotice.classList.add('hidden');
+        }
+
+        document.getElementById('total-price').innerText = `$${Math.round(finalUsd).toLocaleString()}${varSymbol} / ₩${Math.round(finalKrw).toLocaleString()}${varSymbol}`;
+        return { usd: Math.round(finalUsd), krw: Math.round(finalKrw), hasVariable: isVarAddonChecked };
     }
 
-    function sendToDiscord() {
-        const statusBox = document.getElementById('status-box');
-        const submitBtn = document.getElementById('submit-button');
+    // 1대1 문의창구 디스코드 웹훅 전송 함수 (새로 추가된 기능!)
+    function sendInquiry() {
+        const name = document.getElementById('inq-name').value.trim();
+        const contact = document.getElementById('inq-contact').value.trim();
+        const msg = document.getElementById('inq-msg').value.trim();
+        const btn = document.getElementById('inq-btn');
 
-        statusBox.style.display = 'none';
-        statusBox.className = 'p-4 rounded-xl text-sm font-medium border';
-
-        const email = document.getElementById('user-email').value.trim();
-        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
-        
-        if (!email) { 
-            statusBox.innerText = '⚠️ Applicant Email(신청자 이메일)을 입력해 주세요.';
-            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-            statusBox.style.display = "block";
-            return; 
-        }
-        if (!checkedBase) { 
-            statusBox.innerText = 'Base Options(기본 옵션)을 선택해 주세요.';
-            statusBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-            statusBox.style.display = "block";
-            return; 
+        if (!name || !contact || !msg) {
+            alert('모든 항목을 입력해주세요.');
+            return;
         }
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `전송 중... (Sending...)`;
+        btn.innerText = '전송 중...';
+        btn.disabled = true;
 
-        const purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
-        const charDesc = document.getElementById('char-desc').value.trim() || '미작성';
-        const baseText = checkedBase.value;
-        const rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name');
-        const deadline = document.getElementById('deadline').value || '미지정';
-        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
-
-        let extras = [];
-        if (document.getElementById('opt-person').checked) {
-            extras.push(`인물 추가 (${document.getElementById('qty-person').value}명)`);
-        }
-        if (document.getElementById('opt-bg').checked) {
-            extras.push(`배경 추가 (${document.getElementById('qty-bg').value}개)`);
-        }
-        if (document.getElementById('opt-prop').checked) {
-            extras.push(`단순 소품 및 디자인 (${document.getElementById('qty-prop').value}개)`);
-        }
-        if (document.getElementById('opt-detail').checked) {
-            extras.push(`고디테일 요소 (${document.getElementById('qty-detail').value}개)`);
-        }
-        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
-
-        const prices = calculate();
-        const bt = "```";
-
-        const discordPayload = {
+        const payload = {
             embeds: [{
-                title: "일감 받아라",
-                color: 4930162, 
+                title: "💬 [1대1 문의 접수]",
+                color: 16744448, // 주황색 띠
                 fields: [
-                    { name: "📧 신청자 이메일 / 디스코드 아이디", value: email, inline: true },
-                    { name: "⚖️ 이용 용도", value: purposeText, inline: true },
-                    { name: "📐 기본 옵션", value: baseText, inline: true },
-                    { name: "➕ 추가 옵션 (수량)", value: extrasText, inline: false },
-                    { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
-                    { name: "📅 희망 마감일", value: deadline, inline: true },
-                    { name: "📝 캐릭터 외관 설정", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
-                    { name: "💭 기타 문의내용", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
-                    { name: "💰 예상 최종 견적", value: `**$${prices.usd.toLocaleString()} / ₩${prices.krw.toLocaleString()}**`, inline: false }
+                    { name: "이름", value: name, inline: true },
+                    { name: "연락처", value: contact, inline: true },
+                    { name: "문의 내용", value: msg }
                 ],
                 timestamp: new Date().toISOString()
             }]
         };
 
-        const imageFile = document.getElementById('char-image').files[0];
+        fetch(INQUIRY_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(response => {
+            if(response.ok) {
+                alert('문의가 성공적으로 전송되었습니다! 기재해주신 연락처로 답변을 기다려주세요.');
+                document.getElementById('inq-name').value = '';
+                document.getElementById('inq-contact').value = '';
+                document.getElementById('inq-msg').value = '';
+            } else {
+                alert('전송에 실패했습니다. 다시 시도해주세요.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('네트워크 오류가 발생했습니다.');
+        }).finally(() => {
+            btn.innerText = '문의 전송하기';
+            btn.disabled = false;
+        });
+    }
 
+    function sendToDiscord() {
+        const statusBox = document.getElementById('status-box');
+        const submitBtn = document.getElementById('submit-button');
+        statusBox.style.display = 'none';
+
+        const email = document.getElementById('user-email').value.trim();
+        const checkedBase = document.querySelector('input[name="base_opt"]:checked');
+        
+        if (!email) { 
+            showStatus('⚠️ Applicant Email(신청자 연락 정보)을 채워주세요.', 'rose');
+            return; 
+        }
+        if (!checkedBase) { 
+            showStatus('⚠️ Base Options(기본 옵션)을 선택해 주세요.', 'rose');
+            return; 
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `전송 중...`;
+
+        const charDesc = document.getElementById('char-desc').value.trim() || '미작성';
+        const baseText = checkedBase.value;
+        const deadline = document.getElementById('deadline').value || '미지정';
+        const otherRequests = document.getElementById('other-requests').value.trim() || '없음';
+        const customDescribe = document.getElementById('opt-custom-describe').value.trim() || '없음';
+
+        let purposeText = "";
+        let rushText = "";
+        let extras = [];
+
+        if (activeTab === 'illust') {
+            purposeText = document.querySelector('input[name="purpose"]:checked').parentElement.textContent.replace(/\s+/g, ' ').trim();
+            rushText = document.querySelector('input[name="rush"]:checked').getAttribute('data-name');
+            
+            if (document.getElementById('opt-person').checked) {
+                extras.push(`인물 추가 (${document.getElementById('qty-person').value}명)`);
+            }
+            if (document.getElementById('opt-bg').checked) { extras.push(`배경 추가 (${document.getElementById('qty-bg').value}개)`); }
+            if (document.getElementById('opt-prop').checked) { extras.push(`소품 추가 (${document.getElementById('qty-prop').value}개)`); }
+            if (document.getElementById('opt-detail').checked) { extras.push(`고디테일 (${document.getElementById('qty-detail').value}개)`); }
+        } else {
+            purposeText = "상업용/방송용 권한 포함";
+            rushText = document.querySelector('input[name="rush_v"]:checked').getAttribute('data-name');
+            
+            // 저작권 옵션
+            const activeCopyright = document.querySelector('input[name="v_copyright"]:checked');
+            if (activeCopyright) {
+                extras.push(`상업권 설정: ${activeCopyright.value.split(',')[2]}`);
+            }
+            
+            // 비공개 설정
+            const activeDisclosure = document.querySelector('input[name="v_disclosure_opt"]:checked');
+            if (activeDisclosure) {
+                const dv = activeDisclosure.value;
+                if (dv === 'open') extras.push("비공개: 공개 가능");
+                else if (dv === 'month') extras.push("비공개: 1달 비공개 권한");
+                else if (dv === 'forever') extras.push("비공개: 영구 비공개 설정");
+            }
+
+            // 표정 연산 요약정보 수집
+            const expCheckboxes = document.querySelectorAll('input[name="v_expression"]:checked');
+            let expNames = [];
+            expCheckboxes.forEach(cb => expNames.push(cb.value));
+            const customExpQty = parseInt(document.getElementById('v-exp-custom-qty').value) || 0;
+            const totalExp = expNames.length + customExpQty;
+            const billableExp = Math.max(0, totalExp - 3);
+            extras.push(`표정: 총 ${totalExp}개 신청 (선택: ${expNames.join(', ') || '없음'} + 추가의뢰: ${customExpQty}개 / 3개 무료 제외 후 ${billableExp}개 유료 청구)`);
+
+            // 세부 바디 의상 헤어 추가 옵션 수집
+            const vAddonCheckboxes = document.querySelectorAll('input[name="v_addon"]:checked');
+            vAddonCheckboxes.forEach(cb => {
+                extras.push(cb.value.split(',')[2]);
+            });
+        }
+        
+        const extrasText = extras.length > 0 ? extras.join(', ') : '없음';
+        const prices = calculate();
+        const suffix = prices.hasVariable ? "~" : "";
+        const bt = "```";
+
+        // 디스코드 페이로드 구성
+        let discordPayload = {
+            embeds: [{
+                title: activeTab === 'illust' ? "🎨 [그림 커미션 접수]" : "👾 [버츄얼 모델러 전신 접수]",
+                color: activeTab === 'illust' ? 3447003 : 10181046, 
+                fields: [
+                    { name: "📧 신청자 연락 정보 (Email/Discord)", value: email, inline: true },
+                    { name: "⚖️ 이용 용도 분류", value: purposeText, inline: true },
+                    { name: "📐 타입 선택", value: baseText, inline: true },
+                    { name: "➕ 추가 옵션 수량 및 설정", value: extrasText, inline: false },
+                    { name: "✏️ 그 외 기타 추가옵션 (상담)", value: customDescribe, inline: false },
+                    { name: "⚡ 빠른 마감 여부", value: rushText, inline: true },
+                    { name: "📅 희망 마감 일정", value: deadline, inline: true },
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        // 버츄얼 전용 데이터 필드 가산 주입
+        if (activeTab === 'virtual') {
+            const platform = document.getElementById('v-platform').value.trim() || '미지정';
+            const debut = document.getElementById('v-debut').value || '미지정';
+            const agency = document.querySelector('input[name="agency"]:checked').value === 'corporate' ? "기업세" : "개인세";
+
+            discordPayload.embeds[0].fields.splice(1, 0, 
+                { name: "📺 활동 플랫폼 & 닉네임", value: platform, inline: true },
+                { name: "🚀 데뷔 예정일", value: debut, inline: true },
+                { name: "🤝 협업 리깅 작가", value: "아이자와 리코 (자동 연동 제휴)", inline: true },
+                { name: "🏢 소속 분류", value: agency, inline: true }
+            );
+        }
+
+        // 공통 캐릭터 묘사 및 기타 요청사항, 가격 계산액 추가
+        discordPayload.embeds[0].fields.push(
+            { name: "📝 디자인 캐릭터 설정 정보", value: bt + "\n" + charDesc + "\n" + bt, inline: false },
+            { name: "💭 요구 및 기타 조율사항", value: bt + "\n" + otherRequests + "\n" + bt, inline: false },
+            { name: "💰 총 계산액 (Estimated Cost)", value: `**$${prices.usd.toLocaleString()}${suffix} / ₩${prices.krw.toLocaleString()}${suffix}**`, inline: false }
+        );
+
+        const imageFile = document.getElementById('char-image').files[0];
         if (imageFile) {
             const formData = new FormData();
             formData.append("payload_json", JSON.stringify(discordPayload));
             formData.append("file", imageFile);
-
-            fetch(DISCORD_WEBHOOK_URL, { method: "POST", body: formData })
-            .then(res => handleResponse(res))
-            .catch(err => handleError(err));
+            fetch(DISCORD_WEBHOOK_URL, { method: "POST", body: formData }).then(res => handleResponse(res)).catch(err => handleError(err));
         } else {
             fetch(DISCORD_WEBHOOK_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(discordPayload)
-            })
-            .then(res => handleResponse(res))
-            .catch(err => handleError(err));
+            }).then(res => handleResponse(res)).catch(err => handleError(err));
         }
 
         function handleResponse(response) {
             if (response.ok) {
-                statusBox.innerText = "신청서와 첨부 이미지가 성공적으로 전송되었습니다!";
-                statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200";
-                statusBox.style.display = "block";
-                
+                showStatus("🎉 신청서가 성공적으로 발송되었습니다! 기재해주신 연락 경로로 확인 메시지를 보내드립니다.", "emerald");
+                // 입력 필드 일괄 초기화
                 document.getElementById('user-email').value = '';
                 document.getElementById('char-desc').value = '';
                 document.getElementById('char-image').value = '';
                 document.getElementById('deadline').value = '';
                 document.getElementById('other-requests').value = '';
+                document.getElementById('opt-custom-describe').value = '';
+                
+                if (activeTab === 'virtual') {
+                    document.getElementById('v-platform').value = '';
+                    document.getElementById('v-debut').value = '';
+                    document.getElementById('v-exp-custom-qty').value = 0;
+                    document.querySelectorAll('input[name="v_expression"]').forEach(cb => {
+                        cb.checked = false;
+                        cb.closest('label').className = "flex items-center justify-center p-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 cursor-pointer hover:bg-slate-50 transition-all select-none";
+                    });
+                }
+
                 document.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
                 document.querySelectorAll('.qty-wrapper').forEach(w => w.classList.add('hidden'));
                 document.querySelectorAll('.option-container').forEach(c => c.className = "flex flex-col p-3 rounded-xl border border-slate-200 bg-white transition-all option-container");
-                calculate();
-            } else {
-                throw new Error("서버 응답 에러");
-            }
+                switchFormTab(activeTab);
+            } else { throw new Error("서버 접수 응답 지연"); }
             resetSubmitBtn();
         }
 
         function handleError(error) {
-            statusBox.innerHTML = `<div>❌ <strong>전송 오류 발생!</strong> 인터넷 연결 상태를 확인해 주세요.</div>`;
-            statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200";
-            statusBox.style.display = "block";
+            showStatus("❌ 오류가 발생했습니다. 잠시 후 재시도 해주세요.", "rose");
             resetSubmitBtn();
         }
 
@@ -626,8 +1400,13 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = "신청서 전송하기 (Submit Order)";
         }
+
+        function showStatus(msg, color) {
+            statusBox.innerText = msg;
+            if(color === 'rose') { statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-rose-50 text-rose-800 border-rose-200 block"; }
+            else { statusBox.className = "p-4 rounded-xl text-sm font-medium border bg-emerald-50 text-emerald-800 border-emerald-200 block"; }
+        }
     }
 </script>
-
 </body>
 </html>
