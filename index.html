@@ -45,7 +45,7 @@
             7: false, 8: true, 9: true, 10: true, 11: true, 12: true
         };
 
-        const defaultNotice = `[공지사항 및 약관]\n\n• 모든 저작권은 작가에게 있습니다.\n• 작업 기간은 최소 1주에서 최대 4주 소요됩니다.\n• 슬롯 현황을 확인하신 후 신청해 주세요!\n• 버츄얼 모델 일러스트는 기본적으로 상업용/방송용 권한을 온전히 포함하여 PSD 원본 파츠 분리본으로 전달됩니다 (리깅 미포함).`;
+        
     </script>
     <style>
         body {
@@ -167,7 +167,7 @@
 
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                 <button onclick="toggleAccordion('acc-faq')" class="w-full flex items-center justify-between p-4 focus:outline-none hover:bg-slate-50 transition-all">
-                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">FAQ & Q&A / 자주 묻는 질문</span>
+                    <span class="text-xs font-bold tracking-wider text-slate-600 uppercase">FAQ / 자주 묻는 질문</span>
                     <svg id="arrow-acc-faq" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -175,28 +175,39 @@
                 <div id="acc-faq" class="accordion-content max-h-0 overflow-hidden bg-slate-50">
                     <div class="text-xs text-slate-600 p-4 border-t border-slate-100 space-y-3 leading-relaxed">
                         <div class="border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q1. 캐릭터 설정화나 참고 자료가 아예 없는 상태에서도 신청이 가능한가요?</h4>
-                            <p class="text-[11px] text-slate-500">A. 죄송하지만 무에서 유를 만드는 신규 캐릭터 디자인 서비스는 제공하지 않습니다. 원활한 작업을 위해 캐릭터의 외관, 의상, 색상 정보 등이 명확히 기재된 설정화나 참고 이미지 자료가 반드시 준비되어 있어야 신청이 가능합니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q1. Can I apply even if I don’t have a character reference sheet or any reference materials?
+                                   --- 캐릭터 설정화나 참고 자료가 아예 없는 상태에서도 신청이 가능한가요?</h4>
+                            <p class="text-[11px] text-slate-500">A. I’m afraid I do not offer character design services at the moment. To ensure a smooth workflow, you must provide a clear reference sheet or reference images that specify your character's appearance, outfit, and color palette before submitting your request.
+                              죄송하지만 캐릭터 디자인 의뢰는 현재 진행하지 않습니다. 원활한 작업을 위해 캐릭터의 외관, 의상, 색상 정보 등이 기재된 설정화나 참고 이미지 자료가 반드시 준비되어 있어야 신청이 가능합니다.</p>
                         </div>
                         <div class="border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q2. 버츄얼 일러스트 최종 작업물은 어떤 사양과 파일 형태로 받게 되나요?</h4>
-                            <p class="text-[11px] text-slate-500">A. 리깅 작가님이 즉시 작업에 착수하실 수 있도록 완벽히 파츠 분리된 포토샵 원본 파일(PSD)로 제공됩니다. 해상도는 기본 300dpi 고화질로 작업하여 전달해 드립니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q2. What are the specifications and file formats for the final Vtuber illustration?
+                              --- 버츄얼 일러스트 최종 작업물은 어떤 사양과 파일 형태로 받게 되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. The artwork will be delivered as a PSD source file with standard layer separation ready for rigging. The final file will be completed and provided in an ultra-high resolution of 1200 dpi.
+                              리깅 작업이 가능하도록 파츠 분리된 원본 파일(PSD)로 제공됩니다. 해상도는 1200dpi 고화질로 작업하여 전달해 드립니다.</p>
                         </div>
                         <div class="border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q3. 중간 컨펌은 구체적으로 어떤 방식으로 진행되나요?</h4>
-                            <p class="text-[11px] text-slate-500">A. 신청서에 작성해 주신 연락처(이메일 또는 디스코드)로 스케치(러프) 단계를 송부해 드립니다. 러프 단계 내에서 최대 2회까지 피드백을 반영한 무상 수정이 진행되며, 승인 이후 선화 및 채색 단계로 넘어갑니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q3. How does the review/revision process work? --- 중간 컨펌은 구체적으로 어떤 방식으로 진행되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. I will first send the initial sketch (rough draft) to the contact method you provided in your application form (Email or Discord). Up to [2] free revisions are allowed exclusively during this sketch stage. Once approved, the project will move forward to the lineart and coloring stages.
+                              신청서에 작성해 주신 연락처(이메일 또는 디스코드)로 우선 러프 단계를 전달해 드립니다. 러프 단계 내에서 최대 2회까지 피드백을 반영한 무상 수정이 진행되며, 승인 이후 선화 및 채색 단계로 넘어갑니다.</p>
                         </div>
                         <div class="border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q4. 일반 커미션의 '상업용 권한'과 버츄얼의 '저작권 영구 양도'는 어떻게 다른가요?</h4>
-                            <p class="text-[11px] text-slate-500">A. '상업용 권한'은 방송 송출 및 수익 창출 콘텐츠에 작업물을 사용할 수 있는 권리이며, '저작권 영구 양도'는 저작권 자체를 완전히 양도받아 상업적 굿즈 제작, 소스 2차 가공 등을 제약 없이 자유롭게 할 수 있는 권리입니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q4. What is the difference between 'Commercial/Streaming Rights' for regular commissions and 'Full Copyright Transfer' for Vtuber commissions?
+                              --- 일반 커미션의 '상업용 권한'과 버츄얼 커미션의 '저작권 영구 양도'는 어떻게 다른가요?</h4>
+                            <p class="text-[11px] text-slate-500">A. 'Commercial/Streaming Rights' grant you the permission to use the artwork for broadcasting and revenue-generating content. On the other hand, 'Full Copyright Transfer' means you completely acquire the copyright itself, allowing you to freely produce commercial merchandise, secondary modifications, and assets without any restrictions.
+                              '상업용 권한'은 방송 송출 및 수익 창출 콘텐츠에 작업물을 사용할 수 있는 권리이며, '저작권 영구 양도'는 저작권 자체를 완전히 양도받아 상업적 굿즈 제작, 소스 2차 가공 등을 제약 없이 자유롭게 할 수 있는 권리입니다.</p>
                         </div>
                         <div class="border-b border-slate-100 pb-2">
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q5. 제휴 리깅 작가인 아이자와 리코 작가님과의 협업 작업은 어떻게 연동되나요?</h4>
-                            <p class="text-[11px] text-slate-500">A. 일러스트 작업(파츠 분리 완료된 PSD 파일)이 최종 승인되면, 연동 제휴를 통해 리코 작가님께서 바로 리깅 작업을 이어서 진행하실 수 있도록 레이어 구조와 사양을 완벽히 맞춰서 안전하게 연동해 드립니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q5. How does the workflow link with your partner rigger, RIKO_S2RK?
+                              --- 협업 리깅 작가인 아이자와 리코 작가님과의 협업 작업은 어떻게 연동되나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. Once the illustration work (the layer-separated PSD file) is finalized and approved, I will securely transfer the file via email. The layer structure and specifications will be perfectly tailored so that Riko Aizawa can smoothly proceed with the rigging process right away.
+                              일러스트 작업(파츠 분리 완료된 PSD 파일)이 최종 승인되면, 이메일를 통해 리코 작가님께서 바로 리깅 작업을 이어서 진행하실 수 있도록 레이어 구조와 사양을 완벽히 맞춰서 안전하게 전달해 드립니다.</p>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q6. 신청서를 보낸 후에도 상세 옵션을 수정하거나 일정을 조율할 수 있나요?</h4>
-                            <p class="text-[11px] text-slate-500">A. 네, 가능합니다! 전송해 주신 신청서를 바탕으로 1차 확인 후, 기재해 주신 연락처를 통해 상담을 진행하며 세부적인 연출이나 일정을 유동적으로 최종 조율해 드립니다.</p>
+                            <h4 class="font-bold text-slate-800 text-xs mb-1">Q6. Can I still modify detailed options or adjust the schedule after submitting the application?
+                              --- 신청서를 보낸 후에도 상세 옵션을 수정하거나 일정을 조율할 수 있나요?</h4>
+                            <p class="text-[11px] text-slate-500">A. Yes, absolutely! After checking your initial application form, I will contact you through your provided contact information to consult on the details. We can flexibly finalize any specific expressions, assets, or scheduling at that stage.
+                              네, 가능합니다! 전송해 주신 신청서를 바탕으로 1차 확인 후, 기재해 주신 연락처를 통해 상담을 진행하며 세부적인 연출이나 일정을 유동적으로 최종 조율해 드립니다.</p>
                         </div>
                     </div>
                 </div>
@@ -211,59 +222,76 @@
             
             <div class="flex items-center gap-4 bg-white/60 p-3.5 rounded-xl border border-white/80">
                 <div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-cyan-200 to-pink-200 shrink-0 flex items-center justify-center text-slate-500 font-bold text-sm">
-                    L2D
+                    @RIKO
+                  _S2RK
                 </div>
                 <div>
-                    <h3 class="text-sm font-bold text-slate-800">아이자와 리코 (愛沢莉子)</h3>
-                    <p class="text-[11px] text-slate-500 mt-0.5">부드러운 모션과 물리엔진 커스텀 설계 장인. 저와 협업하여 작업을 연동하실 수 있습니다.</p>
+                    <h3 class="text-sm font-bold text-slate-800">아이자와 리코 愛沢莉子</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">최선을 다해 작업하겠습니다! 편하게 문의해 주세요.</p>
                 </div>
             </div>
             
             <div class="flex gap-2">
-                <a href="https://x.com/RIKO_S2RK" target="_blank" class="flex-1 text-center bg-slate-900 text-[11px] text-white py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition-all">리깅 다이렉트 문의</a>
+                <a href="https://x.com/RIKO_S2RK" target="_blank" class="flex-1 text-center bg-slate-900 text-[11px] text-white py-2.5 rounded-lg font-semibold hover:bg-slate-800 transition-all">Artist's X Profile</a>
             </div>
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
             <div class="flex items-center justify-between mb-2">
                 <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
-                    DIRECT CONTACT / 1대1 문의창구
+                    DIRECT CONTACT / 1대1 문의게시판
                 </h2>
                 <span class="text-[9px] font-bold bg-indigo-50 text-indigo-500 border border-indigo-100 px-2 py-0.5 rounded-full">디스코드 연동</span>
             </div>
-            <p class="text-[11px] text-slate-500 pb-1">신청 전 단순 질문이나 복잡한 추가 옵션 조율이 필요하시다면 편하게 남겨주세요!</p>
+            <p class="text-[11px] text-slate-500 pb-1">Have questions or need custom options before ordering? Feel free to ask!
+신청 전 단순 질문이나 복잡한 추가 옵션 조율이 필요하시다면 편하게 남겨주세요!</p>
             <div class="space-y-2">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="inq-name" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="이름 / 닉네임">
+                    <input type="text" id="inq-name" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="Name / Nickname 이름 / 닉네임">
                     <input type="text" id="inq-contact" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white transition-all" placeholder="연락처 (Discord/Email)">
                 </div>
-                <textarea id="inq-msg" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white h-20 resize-none transition-all" placeholder="궁금하신 점을 자유롭게 적어주세요."></textarea>
+                <textarea id="inq-msg" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs outline-none focus:border-cyan-400 focus:bg-white h-20 resize-none transition-all" placeholder="Please enter your question here. (Replies typically sent within 1–2 days)
+궁금하신 점을 자유롭게 적어주세요. (전송일로부터 평균 1~2일 이내 답변)"></textarea>
                 <button type="button" id="inq-btn" onclick="sendInquiry()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all shadow-sm">
-                    문의 전송하기
+                    문의 전송하기 (Send Message)
                 </button>
             </div>
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
-            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
-                Artwork Samples / 포트폴리오 샘플
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
-                    [그림 샘플 1 위치]
-                </div>
-                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
-                    [그림 샘플 2 위치]
-                </div>
-                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
-                    [그림 샘플 3 위치]
-                </div>
-                <div class="aspect-[4/3] rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs text-slate-400 font-medium overflow-hidden">
-                    [그림 샘플 4 위치]
-                </div>
-            </div>
-        </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+    <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase">
+        Artwork Samples / 포트폴리오 샘플
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+
+        <a href="images/sample1.jpg" target="_blank"
+           class="aspect-[4/3] overflow-hidden rounded-xl border border-slate-200">
+            <img src="images/sample1.jpg"
+                 class="w-full h-full object-cover hover:scale-105 transition-all duration-300">
+        </a>
+
+        <a href="images/sample2.jpg" target="_blank"
+           class="aspect-[4/3] overflow-hidden rounded-xl border border-slate-200">
+            <img src="images/sample2.jpg"
+                 class="w-full h-full object-cover hover:scale-105 transition-all duration-300">
+        </a>
+
+        <a href="images/sample3.jpg" target="_blank"
+           class="aspect-[4/3] overflow-hidden rounded-xl border border-slate-200">
+            <img src="images/sample3.jpg"
+                 class="w-full h-full object-cover hover:scale-105 transition-all duration-300">
+        </a>
+
+        <a href="images/sample4.jpg" target="_blank"
+           class="aspect-[4/3] overflow-hidden rounded-xl border border-slate-200">
+            <img src="images/sample4.jpg"
+                 class="w-full h-full object-cover hover:scale-105 transition-all duration-300">
+        </a>
+
     </div>
+</div>
 
     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-4 w-full">
         
@@ -275,10 +303,10 @@
             
             <div class="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-xl relative">
                 <button type="button" id="tab-illust" onclick="switchFormTab('illust')" class="py-2.5 text-xs font-bold rounded-lg transition-all bg-white text-slate-900 shadow-sm relative z-10">
-                    그림 커미션
+                    ILLUST 그림 커미션
                 </button>
                 <button type="button" id="tab-virtual" onclick="switchFormTab('virtual')" class="py-2.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-900">
-                    버츄얼 커미션
+                    LIVE2D 버츄얼 커미션
                 </button>
             </div>
         </div>
@@ -306,7 +334,7 @@
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Collaborator / 협업 리깅작가 연동여부</label>
                     <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 leading-relaxed">
-                        본 신청서는 자동으로 <strong class="text-slate-800">아이자와 리코</strong>님과 연동 처리가 접수되어 협업 혜택이 적용됩니다. (원치 않으실 경우 하단 기타 요청란에 메모해 주세요.)
+                        본 신청서는 자동으로 <strong class="text-slate-800">아이자와 리코</strong>님과 연동 처리가 접수되지 않습니다. (협업으로 신청 원하실 경우 하단 기타 요청란에 메모해 주세요.)
                     </div>
                 </div>
             </div>
@@ -333,11 +361,11 @@
                     <div class="grid grid-cols-2 gap-3" id="agency-group">
                         <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center selected ring-2 ring-cyan-400">
                             <input type="radio" name="agency" value="individual" checked class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleAgencyChange(this)">
-                            <span class="text-sm font-semibold text-slate-900">Individual (개인세)</span>
+                            <span class="text-sm font-semibold text-slate-900">Individual 개인세</span>
                         </label>
                         <label class="relative flex flex-col items-center justify-center p-4 rounded-xl border border-slate-200 bg-white cursor-pointer select-none hover:bg-slate-50 transition-all text-center">
                             <input type="radio" name="agency" value="corporate" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleAgencyChange(this)">
-                            <span class="text-sm font-semibold text-slate-900">Corporate (기업세)</span>
+                            <span class="text-sm font-semibold text-slate-900">Corporate 기업세</span>
                         </label>
                     </div>
                 </div>
@@ -522,112 +550,112 @@
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="72,100000,온오프 장식" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                온오프 장식 등
+                                On/Off Toggles (Accessories, etc.) 온오프 장식 등
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩100,000 / $72</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="72,100000,긴헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                엉덩이 밑까지 오는 긴헤어
+                                Extra Long Hair (Below Hip Length) 엉덩이 밑까지 오는 긴헤어
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩100,000 / $72</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="36,50000,복잡헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                헤어 (복잡한 변형)
+                                Alternative Hair (Complex Variation) 헤어 (복잡한 변형)
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩50,000 / $36</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="250,350000,전체변형헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                신헤어 (전체 변형)
+                                Brand New Hair (Full Variation) 신헤어 (전체 변형)
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩350,000 / $250</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="142,200000,뒷머리변형헤어" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                신헤어 (뒷머리 변형)
+                                Brand New Hair (Back Hair Variation Only) 신헤어 (뒷머리 변형)
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩200,000 / $142</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="36,50000,동물귀꼬리,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                동물귀, 꼬리, 유사 파츠
+                                Animal Ears, Tail, & Similar Parts 동물귀, 꼬리, 유사 파츠
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩50,000~ / $36~</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="36,50000,소품,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                단순 소품 및 장식
+                                Simple Props & Accessories 단순 소품 및 장식
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩50,000~ / $36~</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="250,350000,신의상,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                신의상 제작
+                                Brand New Outfit Design / Creation 신의상 제작
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩350,000~ / $250~</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="58,80000,손포즈" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                추가 손포즈 파츠 분리
+                                Additional Hand Poses (Layer Separation) 추가 손포즈 파츠 분리
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩80,000 / $58</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="108,150000,추가오브젝트,isVar" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                오브젝트 & 추가팔 파츠 설계
+                                Object Assets & Additional Arm Parts Design 오브젝트 & 추가팔 파츠 설계
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩150,000~ / $108~</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="36,50000,추가시안" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                추가 설정 시안
+                                Additional Concept Rough Drafts 추가 설정 시안
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩50,000 / $36</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="142,200000,삼면도" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                설정 삼면도 단색화
+                                3-View Character Sheet (Flat / Solid Colors) 설정 삼면도 단색화
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩200,000 / $142</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="108,150000,비대칭포즈" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                비대칭 기본 대기 포즈
+                                Asymmetric Idle Pose Base 비대칭 기본 대기 포즈
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩150,000 / $108</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="11,15000,실시간컨펌" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                디스코드 실시간 1:1 컨펌 조율
+                                Real-time 1:1 Review via Discord 디스코드 실시간 1:1 컨펌 조율
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩15,000 / $11</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="285,400000,핸드트래킹" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                완벽 핸드트래킹용 파츠 추가 세분화
+                                Extra Layer Separation for Hand Tracking 핸드트래킹용 파츠 추가 세분화
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩400,000 / $285</span>
                         </label>
                         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all option-label">
                             <span class="text-xs font-medium text-slate-700 flex items-center gap-2">
                                 <input type="checkbox" name="v_addon" value="215,300000,맨몸풀채색" class="rounded border-slate-300 text-cyan-600" onchange="calculate()">
-                                맨몸 풀 채색 소스 동시 동봉
+                                Full-Body Base Model (Fully Colored Naked Base) 맨몸 풀 채색
                             </span>
                             <span class="text-xs text-slate-400 font-sans font-medium">₩300,000 / $215</span>
                         </label>
@@ -635,7 +663,7 @@
                 </div>
 
                 <div class="flex flex-col p-3.5 rounded-xl border border-slate-200 bg-slate-50 transition-all">
-                    <label class="text-xs font-bold text-slate-500 mb-1">그 외 기타 추가옵션 (수식 제외 / 추후 협의)</label>
+                    <label class="text-xs font-bold text-slate-500 mb-1">Other Additional Options (To be discussed) 그 외 기타 추가옵션 (추후 협의)</label>
                     <input type="text" id="opt-custom-describe" class="w-full rounded-lg border border-slate-200 p-2 text-xs outline-none bg-white focus:border-cyan-400" placeholder="상담이 필요한 개별 희망 추가 사항 적기">
                 </div>
             </div>
@@ -730,10 +758,9 @@
 
 <script>
     // 지정해주신 디스코드 채널 웹훅 주소(CORS 우회 지원)
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515834246210519052/QPxttyyPB9sVui8ZJ4z1HuhogjrJVBtW13CP0NeygrkNhLR4CDgttOoaJAj4-0YJQ_Li";
+    
     // 1:1 문의 전용 디스코드 채널 웹훅 주소
-    const INQUIRY_WEBHOOK_URL = "https://discord.com/api/webhooks/1516194134354952204/NzsP-gVwvYWSCAsIx3CbCfn-vLZXpfM5yq9jj88FIRepdasoeFSJMie1ztFHOPZwCsnA";
-    const ADMIN_PASSWORD = "0000";
+    
 
     let currentSlots = {};
     let currentNotice = "";
@@ -1364,7 +1391,7 @@
 
         function handleResponse(response) {
             if (response.ok) {
-                showStatus("🎉 신청서가 성공적으로 발송되었습니다! 기재해주신 연락 경로로 확인 메시지를 보내드립니다.", "emerald");
+                showStatus("🎉 신청서가 성공적으로 발송되었습니다! 기재해주신 연락 경로로 확인 메시지를 보내드립니다. (전송일 기준 최대 1주일 소요)", "emerald");
                 // 입력 필드 일괄 초기화
                 document.getElementById('user-email').value = '';
                 document.getElementById('char-desc').value = '';
@@ -1398,7 +1425,7 @@
 
         function resetSubmitBtn() {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = "신청서 전송하기 (Submit Order)";
+            submitBtn.innerHTML = "※ 신청 접수 준비중 신청서 전송하기 (Submit Order)";
         }
 
         function showStatus(msg, color) {
